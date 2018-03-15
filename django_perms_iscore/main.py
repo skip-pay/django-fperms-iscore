@@ -5,4 +5,6 @@ from django_perms_iscore.mixins import PermMixin
 
 
 class PermUIRESTModelISCore(PermMixin, UIRESTModelISCore):
-    pass
+
+    abstract = True
+

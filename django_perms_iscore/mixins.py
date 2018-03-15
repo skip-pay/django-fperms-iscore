@@ -8,22 +8,23 @@ from django_perms_iscore.utils import get_iscore_class_str
 
 class PermMixin(PermissionsMixin):
 
-    def _get_perm(self, codename, obj):
+    @classmethod
+    def _get_perm(cls, codename, obj):
         return get_perm_model().objects.get(
             type=enums.PERM_TYPE_CORE,
             codename=codename,
-            core=get_iscore_class_str(self.__class__),
-            obj=obj,
+            core=get_iscore_class_str(cls),
+            object_id=obj.pk if obj else None,
         )
 
     def has_read_permission(self, request, obj=None):
-        return request.user.perms.has_perm(self._get_perm('read', obj=obj))
+        return request.user.is_superuser or request.user.perms.has_perm(self._get_perm('read', obj=obj))
 
     def has_create_permission(self, request, obj=None):
-        return request.user.perms.has_perm(self._get_perm('create', obj=obj))
+        return request.user.is_superuser or request.user.perms.has_perm(self._get_perm('create', obj=obj))
 
     def has_update_permission(self, request, obj=None):
-        return request.user.perms.has_perm(self._get_perm('update', obj=obj))
+        return request.user.is_superuser or request.user.perms.has_perm(self._get_perm('update', obj=obj))
 
     def has_delete_permission(self, request, obj=None):
-        return request.user.perms.has_perm(self._get_perm('delete', obj=obj))
+        return request.user.is_superuser or request.user.perms.has_perm(self._get_perm('delete', obj=obj))

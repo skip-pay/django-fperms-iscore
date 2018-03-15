@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'is_core',
+    'block_snippets',
+
+    'germanium',
 
     'django_perms',
     'django_perms_iscore',
@@ -57,7 +60,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'is_core.middleware.RequestKwargsMiddleware',
-    'is_core.middleware.HttpExceptionsMiddleware',
+    'is_core.middleware.HTTPExceptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'example.urls'

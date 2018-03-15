@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_perms.models import BasePerm
 
 from django_perms_iscore import enums
+from django_perms_iscore.utils import get_iscore_class
+from django_perms_iscore.exceptions import IsCoreDoesNotExist
 
 
 class IsCorePerm(BasePerm):
@@ -42,6 +44,11 @@ class IsCorePerm(BasePerm):
 
         if perm_type == enums.PERM_TYPE_CORE:
             core, codename = perm_arg_string.rsplit('.', 1)
+
+            try:
+                get_iscore_class(core)
+            except AttributeError:
+                raise IsCoreDoesNotExist(_('provided IsCore does not exist'))
 
             return dict(
                 type=perm_type,

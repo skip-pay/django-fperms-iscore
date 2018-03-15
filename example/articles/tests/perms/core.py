@@ -1,4 +1,5 @@
 from django_perms_iscore import enums
+from django_perms_iscore.exceptions import IsCoreDoesNotExist
 from django_perms_iscore.models import IsCorePerm
 
 from .base import ArticleTestCase, ArticleUserPermTestCase
@@ -54,7 +55,7 @@ class ArticleUserModelPermPermTestCase(CorePermTestCase, ArticleUserPermTestCase
 
     def test_fail_add_core_perm_by_non_existent_core(self):
         self._create_perm()
-        with self.assertRaises(IsCorePerm.DoesNotExist):
+        with self.assertRaises(IsCoreDoesNotExist):
             self.user.perms.add('core.articles.Bar.read')
 
     def test_has_core_perm_from_wildcard(self):
@@ -63,3 +64,6 @@ class ArticleUserModelPermPermTestCase(CorePermTestCase, ArticleUserPermTestCase
         self.user.perms.add('core.articles.ArticlePermUIRESTModelISCore.*')
 
         self.assertTrue(self.user.perms.has_perm('core.articles.ArticlePermUIRESTModelISCore.whatever'))
+    #
+    # def test_core_url_access_rights(self):
+    #     print(self.client.get('/articles/'))

@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from is_core.site import site
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^', include(site.urls)),
     url(r'', include('django_perms_iscore.urls', namespace='django_perms_iscore')),
 ]

@@ -16,7 +16,7 @@ class UserFactory(factory.DjangoModelFactory):
     first_name = factory.Sequence(lambda n: 'John{0}'.format(n))
     last_name = factory.Sequence(lambda n: 'Doe{0}'.format(n))
     email = factory.LazyAttribute(lambda a: '{0}.{1}@example.com'.format(a.first_name, a.last_name).lower())
-    password = DEFAULT_PASSWORD
+    password = factory.PostGenerationMethodCall('set_password', DEFAULT_PASSWORD)
 
     is_active = True
 
