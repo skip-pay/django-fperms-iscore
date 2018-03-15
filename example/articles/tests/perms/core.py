@@ -1,7 +1,7 @@
 from django_perms_iscore import enums
 from django_perms_iscore.models import IsCorePerm
 
-from .base import ArticleTestCase, ArticleUserPermTestCase, ArticleGroupPermTestCase
+from .base import ArticleTestCase, ArticleUserPermTestCase
 
 
 class CorePermTestCaseMixin:
@@ -12,7 +12,7 @@ class CorePermTestCaseMixin:
     def _create_read_perm(self):
         return IsCorePerm.objects.create(
             type=enums.PERM_TYPE_CORE,
-            codename='create',
+            codename='read',
             core=self._get_core_str()
         )
 
@@ -33,67 +33,33 @@ class CorePermTestCase(CorePermTestCaseMixin, ArticleTestCase):
 
 class ArticleUserModelPermPermTestCase(CorePermTestCase, ArticleUserPermTestCase):
 
-    def test_add_model_perm_by_perm(self):
+    def test_add_core_perm_by_perm(self):
         perm = self._create_perm()
 
         self.user.perms.add(perm)
 
         self.assertTrue(self.user.perms.has_perm(perm))
 
-#     def test_add_model_perm_by_str(self):
-#         add_perm = self._create_add_perm()
-#
-#         self.user.perms.add('model.articles.Article.add')
-#
-#         self.assertTrue(self.user.perms.has_perm(add_perm))
-#
-#     def test_fail_add_model_perm_by_non_existent_codename(self):
-#         self._create_perm()
-#         with self.assertRaises(Perm.DoesNotExist):
-#             self.user.perms.add('model.articles.Article.delete')
-#
-#     def test_fail_add_model_perm_by_non_existent_model(self):
-#         self._create_perm()
-#         with self.assertRaises(LookupError):
-#             self.user.perms.add('model.articles.Bar.fap')
-#
-#     def test_has_model_perm_from_wildcard(self):
-#         self._create_wildcard_perm()
-#
-#         self.user.perms.add('model.articles.Article.*')
-#
-#         self.assertTrue(self.user.perms.has_perm('model.articles.Article.whatever'))
-#
-#
-# class ArticleGroupModelPermPermTestCase(ModelPermTestCaseMixin, ArticleGroupPermTestCase):
-#
-#     def test_add_model_perm_by_perm(self):
-#         perm = self._create_perm()
-#
-#         self.group.perms.add(perm)
-#
-#         self.assertTrue(self.group.perms.has_perm(perm))
-#
-#     def test_add_model_perm_by_str(self):
-#         add_perm = self._create_add_perm()
-#
-#         self.group.perms.add('model.articles.Article.add')
-#
-#         self.assertTrue(self.group.perms.has_perm(add_perm))
-#
-#         # test perm is correctly available to the user as well
-#         self.assertFalse(self.user.perms.has_perm(add_perm))
-#
-#         self.user.groups.add(self.group)
-#
-#         self.assertTrue(self.user.perms.has_perm(add_perm))
-#
-#     def test_fail_add_model_perm_non_existent_codename(self):
-#         self._create_perm()
-#         with self.assertRaises(Perm.DoesNotExist):
-#             self.group.perms.add('model.articles.Article.delete')
-#
-#     def test_fail_add_model_perm_non_existent_model(self):
-#         self._create_perm()
-#         with self.assertRaises(LookupError):
-#             self.group.perms.add('model.articles.Bar.fap')
+    def test_add_core_perm_by_str(self):
+        read_perm = self._create_read_perm()
+
+        self.user.perms.add('core.articles.ArticlePermUIRESTModelISCore.read')
+
+        self.assertTrue(self.user.perms.has_perm(read_perm))
+
+    def test_fail_add_core_perm_by_non_existent_codename(self):
+        self._create_perm()
+        with self.assertRaises(IsCorePerm.DoesNotExist):
+            self.user.perms.add('core.articles.ArticlePermUIRESTModelISCore.delete')
+
+    def test_fail_add_core_perm_by_non_existent_core(self):
+        self._create_perm()
+        with self.assertRaises(IsCorePerm.DoesNotExist):
+            self.user.perms.add('core.articles.Bar.read')
+
+    def test_has_core_perm_from_wildcard(self):
+        self._create_wildcard_perm()
+
+        self.user.perms.add('core.articles.ArticlePermUIRESTModelISCore.*')
+
+        self.assertTrue(self.user.perms.has_perm('core.articles.ArticlePermUIRESTModelISCore.whatever'))

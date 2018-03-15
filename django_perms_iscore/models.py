@@ -35,3 +35,18 @@ class IsCorePerm(BasePerm):
             self.core,
             self.codename,
         ]
+
+    @classmethod
+    def get_perm_kwargs(cls, perm, obj=None):
+        perm_type, perm_arg_string = perm.split('.', 1)
+
+        if perm_type == enums.PERM_TYPE_CORE:
+            core, codename = perm_arg_string.rsplit('.', 1)
+
+            return dict(
+                type=perm_type,
+                codename=codename,
+                core=core
+            )
+
+        return super().get_perm_kwargs(perm=perm, obj=obj)
