@@ -45,3 +45,7 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+example/bower_components
+example/node_modules
+example/static
+package-lock.json

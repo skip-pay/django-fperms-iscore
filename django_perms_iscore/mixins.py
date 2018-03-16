@@ -6,12 +6,14 @@ from django_perms_iscore import enums
 from django_perms_iscore.utils import get_iscore_class_str
 
 
-class PermMixin(PermissionsMixin):
+class PermIsCoreMixin(PermissionsMixin):
+
+    perm_type = enums.PERM_TYPE_CORE
 
     @classmethod
     def _get_perm(cls, codename, obj):
         return get_perm_model().objects.get(
-            type=enums.PERM_TYPE_CORE,
+            type=cls.perm_type,
             codename=codename,
             core=get_iscore_class_str(cls),
             object_id=obj.pk if obj else None,
