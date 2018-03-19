@@ -13,6 +13,7 @@ from django_perms_iscore.exceptions import IsCoreDoesNotExist
 class IsCorePerm(BasePerm):
 
     PERM_TYPE_CHOICES = enums.PERM_TYPE_CHOICES
+    PERM_CODENAMES = enums.PERM_CODENAMES
 
     core = models.CharField(
         _('core'),

@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
 
-from is_core.main import UIRESTModelISCore
-
 from issue_tracker.models import Issue
 from issue_tracker.forms import UserForm
 
@@ -16,16 +14,12 @@ class UserIsCore(PermUIRESTModelISCore):
     list_display = ('id', '_obj_name')
 
     def has_read_permission(self, request, obj=None):
-        return request.user.is_superuser or not obj or obj.pk == request.user.pk
-
-    def has_create_permission(self, request, obj=None):
-        return request.user.is_superuser
+        return super().has_read_permission(request, obj) or (obj and obj.pk == request.user.pk)
 
     def has_update_permission(self, request, obj=None):
-        return (obj and obj.pk == request.user.pk) or request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
+        return super().has_update_permission(request, obj) or (
+            (obj and obj.pk == request.user.pk) or request.user.is_superuser
+        )
 
     def get_queryset(self, request):
         qs = super(UserIsCore, self).get_queryset(request)

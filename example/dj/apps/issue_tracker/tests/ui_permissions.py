@@ -15,8 +15,15 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
     USER_UI_URL = '/user/'
 
     def set_up(self):
-        IsCorePerm.objects.create_from_str('core.issue_tracker.IssueIsCore.read')
-        IsCorePerm.objects.create_from_str('core.issue_tracker.IssueIsCore.create')
+        IsCorePerm.objects.create_from_str(
+            perms=[
+                'core.issue_tracker.IssueIsCore.read',
+                'core.issue_tracker.IssueIsCore.create',
+                'core.issue_tracker.UserIsCore.read',
+                'core.issue_tracker.UserIsCore.create',
+                'core.issue_tracker.UserIsCore.update',
+            ]
+        )
 
     def authorize(self, username, password):
         resp = self.post(config.LOGIN_URL, {config.USERNAME: username, config.PASSWORD: password})
@@ -28,7 +35,6 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_home_view_should_return_ok(self):
-        self.get_user_obj().perms.add('core.issue_tracker.IssueIsCore.read')
         resp = self.get('/')
         assert_http_ok(resp)
 
@@ -39,6 +45,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_ouser_can_read_users_grid(self):
+        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.read')
         resp = self.get(self.USER_UI_URL)
         assert_http_ok(resp)
 
@@ -95,10 +102,17 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_user_with_permission_may_add_user(self):
-        self.get_user_obj().perms.add('core.issue_tracker.IssueIsCore.create')
+        self.logged_user.user.perms.add(
+            perms=[
+                'core.issue_tracker.IssueIsCore.read',
+                'core.issue_tracker.UserIsCore.read',
+                'core.issue_tracker.UserIsCore.create',
+            ]
+        )
+
         USERNAME = 'new_nick'
 
         resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
                                                             'add-is-user-password': 'password'})
-        assert_http_forbidden(resp)
-        assert_false(User.objects.filter(username=USERNAME).exists())
+        assert_http_redirect(resp)
+        assert_true(User.objects.filter(username=USERNAME).exists())

@@ -7,6 +7,8 @@ from germanium.tools.rest import assert_valid_JSON_response, assert_valid_JSON_c
 
 from is_core.tests.auth_test_cases import RESTAuthMixin
 
+from django_perms_iscore.models import IsCorePerm
+
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
 from issue_tracker.models import Issue
@@ -16,6 +18,16 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, RESTAuthMixin, HelperTestCase
     USER_API_URL = '/api/user/'
     ISSUE_API_URL = '/api/issue/'
     USER_ISSUES_API_URL = '/api/user/%(user_pk)s/issue-number/'
+
+    def set_up(self):
+        IsCorePerm.objects.create_from_str(
+            perms=[
+                'core.issue_tracker.UserIsCore.read',
+                'core.issue_tracker.UserIsCore.create',
+                'core.issue_tracker.UserIsCore.update',
+                'core.issue_tracker.UserIsCore.delete',
+            ]
+        )
 
     def test_non_logged_user_should_receive_401(self):
         resp = self.get(self.USER_API_URL)
@@ -32,6 +44,7 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, RESTAuthMixin, HelperTestCase
 
     @login(is_superuser=False)
     def test_user_can_read_all_user_data(self):
+        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.read')
         [self.get_user_obj() for _ in range(5)]
 
         resp = self.get(self.USER_API_URL)
