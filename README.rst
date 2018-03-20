@@ -35,18 +35,8 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add django-fperms-iscore's URL patterns:
-
-.. code-block:: python
-
-    from fperms_iscore import urls as fperms_iscore_urls
-
-
-    urlpatterns = [
-        ...
-        url(r'^', include(fperms_iscore_urls)),
-        ...
-    ]
+    # set the extended model for FPerms
+    PERM_MODEL = 'fperms_iscore.IsCorePerm'
 
 Features
 --------

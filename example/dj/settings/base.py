@@ -143,8 +143,8 @@ INSTALLED_APPS = (
     'is_core.auth_token',
     'block_snippets',
 
-    'fperms',
-    'fperms_iscore',
+    'fperms.apps.FPermsConfig',
+    'fperms_iscore.apps.FPermsIscoreConfig',
 )
 
 # A sample logging configuration. The only tangible logging

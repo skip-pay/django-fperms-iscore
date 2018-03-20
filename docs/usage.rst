@@ -12,15 +12,5 @@ To use django-fperms-iscore in a project, add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add fperms-iscore's URL patterns:
-
-.. code-block:: python
-
-    from fperms_iscore import urls as fperms_iscore_urls
-
-
-    urlpatterns = [
-        ...
-        url(r'^', include(fperms_iscore_urls)),
-        ...
-    ]
+    # set the extended model for FPerms
+    PERM_MODEL = 'fperms_iscore.IsCorePerm'
