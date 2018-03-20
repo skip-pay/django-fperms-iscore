@@ -56,24 +56,23 @@ setup(
         'django_perms_iscore',
     ],
     include_package_data=True,
-    install_requires=["django-model-utils>=2.0",],
+    install_requires=[
+        "django-model-utils>=2.0",
+        "django-perms",
+    ],
     license="MIT",
     zip_safe=False,
     keywords='django-perms-iscore',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
-        'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
-        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    dependency_links=[
+        'https://github.com/formulka/django-perms/tarball/master#egg=django-perms',
+    ]
 )

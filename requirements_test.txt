@@ -5,3 +5,4 @@ tox>=1.7.0
 codecov>=2.0.0
 django-model-utils>=2.0
 factory-boy==2.10.0
+XlsxWriter==0.7.7

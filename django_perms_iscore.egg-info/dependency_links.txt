@@ -1,1 +1,1 @@
-
+https://github.com/formulka/django-perms/tarball/master#egg=django-perms

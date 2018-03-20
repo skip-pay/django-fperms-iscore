@@ -6,6 +6,7 @@ Home-page: https://github.com/Formulka/django-perms-iscore
 Author: Petr Olah
 Author-email: djangoguru@gmail.com
 License: MIT
+Description-Content-Type: UNKNOWN
 Description: =============================
         django-perms-iscore
         =============================
@@ -98,15 +99,8 @@ Keywords: django-perms-iscore
 Platform: UNKNOWN
 Classifier: Development Status :: 3 - Alpha
 Classifier: Framework :: Django
-Classifier: Framework :: Django :: 1.8
-Classifier: Framework :: Django :: 1.9
-Classifier: Framework :: Django :: 1.10
+Classifier: Framework :: Django :: 1.11
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: BSD License
 Classifier: Natural Language :: English
-Classifier: Programming Language :: Python :: 2
-Classifier: Programming Language :: Python :: 2.7
-Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.3
-Classifier: Programming Language :: Python :: 3.4
 Classifier: Programming Language :: Python :: 3.5

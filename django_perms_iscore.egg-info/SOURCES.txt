@@ -5,6 +5,7 @@ LICENSE
 MANIFEST.in
 README.rst
 setup.cfg
+setup.py
 django_perms_iscore/__init__.py
 django_perms_iscore/apps.py
 django_perms_iscore/enums.py

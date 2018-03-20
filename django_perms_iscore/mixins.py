@@ -28,7 +28,7 @@ class PermIsCoreMixin(PermissionsMixin):
         try:
             return perms.get()
         except Perm.DoesNotExist:
-            return Perm.objects.none()
+            return None
 
     def has_read_permission(self, request, obj=None):
         return request.user.is_superuser or request.user.perms.has_perm(self._get_perm('read', obj=obj))
