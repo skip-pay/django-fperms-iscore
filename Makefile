@@ -28,7 +28,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 
 lint: ## check style with flake8
-	flake8 django_perms_iscore tests
+	flake8 fperms_iscore tests
 
 test: ## run tests quickly with the default Python
 	python example/manage.py test example
@@ -37,15 +37,15 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source django_perms_iscore runtests.py tests
+	coverage run --source fperms_iscore runtests.py tests
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/django-perms-iscore.rst
+	rm -f docs/django-fperms-iscore.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ django_perms_iscore
+	sphinx-apidoc -o docs/ fperms_iscore
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html

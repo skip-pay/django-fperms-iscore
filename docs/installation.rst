@@ -4,9 +4,9 @@ Installation
 
 At the command line::
 
-    $ easy_install django-perms-iscore
+    $ easy_install fperms-iscore
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv django-perms-iscore
-    $ pip install django-perms-iscore
+    $ mkvirtualenv fperms-iscore
+    $ pip install fperms-iscore

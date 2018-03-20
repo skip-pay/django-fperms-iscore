@@ -6,7 +6,7 @@ from germanium.test_cases.client import ClientTestCase
 from germanium.tools import assert_true, assert_false, assert_equal, assert_not_equal
 from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden
 
-from django_perms_iscore.models import IsCorePerm
+from fperms_iscore.models import IsCorePerm
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 

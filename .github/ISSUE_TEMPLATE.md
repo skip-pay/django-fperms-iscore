@@ -1,4 +1,4 @@
-* django-perms version:
+* fperms version:
 * Django version:
 * Python version:
 * Operating System:

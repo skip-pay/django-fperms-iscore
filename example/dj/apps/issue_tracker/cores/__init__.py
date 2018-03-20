@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from issue_tracker.models import Issue
 from issue_tracker.forms import UserForm
 
-from django_perms_iscore.main import PermUIRESTModelISCore
+from fperms_iscore.main import PermUIRESTModelISCore
 
 from .resources import NumberOfUserIssuesResource
 

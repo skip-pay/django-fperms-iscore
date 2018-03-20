@@ -7,7 +7,7 @@ from germanium.tools.rest import assert_valid_JSON_response, assert_valid_JSON_c
 
 from is_core.tests.auth_test_cases import RESTAuthMixin
 
-from django_perms_iscore.models import IsCorePerm
+from fperms_iscore.models import IsCorePerm
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 

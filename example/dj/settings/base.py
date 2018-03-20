@@ -143,8 +143,8 @@ INSTALLED_APPS = (
     'is_core.auth_token',
     'block_snippets',
 
-    'django_perms',
-    'django_perms_iscore',
+    'fperms',
+    'fperms_iscore',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -224,4 +224,4 @@ TEMPLATES = [
 PYSTON_PARTIAL_PUT_UPDATE = True
 PYSTON_PARTIAL_RELATED_UPDATE = True
 
-PERM_MODEL = 'django_perms_iscore.IsCorePerm'
+PERM_MODEL = 'fperms_iscore.IsCorePerm'

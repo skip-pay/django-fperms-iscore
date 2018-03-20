@@ -1,10 +1,10 @@
 from django.db.models import Q
 from is_core.auth.main import PermissionsMixin
 
-from django_perms import get_perm_model
+from fperms import get_perm_model
 
-from django_perms_iscore import enums
-from django_perms_iscore.utils import get_iscore_class_str
+from fperms_iscore import enums
+from fperms_iscore.utils import get_iscore_class_str
 
 
 Perm = get_perm_model()

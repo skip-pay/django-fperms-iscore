@@ -1,17 +1,17 @@
 =============================
-django-perms-iscore
+django-fperms-iscore
 =============================
 
-.. image:: https://badge.fury.io/py/django-perms-iscore.svg
-    :target: https://badge.fury.io/py/django-perms-iscore
+.. image:: https://badge.fury.io/py/fperms-iscore.svg
+    :target: https://badge.fury.io/py/fperms-iscore
 
-.. image:: https://travis-ci.org/Formulka/django-perms-iscore.svg?branch=master
-    :target: https://travis-ci.org/Formulka/django-perms-iscore
+.. image:: https://travis-ci.org/Formulka/django-fperms-iscore.svg?branch=master
+    :target: https://travis-ci.org/Formulka/django-fperms-iscore
 
-.. image:: https://codecov.io/gh/Formulka/django-perms-iscore/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/Formulka/django-perms-iscore
+.. image:: https://codecov.io/gh/Formulka/django-fperms-iscore/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/Formulka/django-fperms-iscore
 
-Perms for iscore library 
+Perms for iscore library
 
 Documentation
 -------------
@@ -21,9 +21,9 @@ The full documentation is at https://django-perms-iscore.readthedocs.io.
 Quickstart
 ----------
 
-Install django-perms-iscore::
+Install django-fperms-iscore::
 
-    pip install django-perms-iscore
+    pip install fperms-iscore
 
 Add it to your `INSTALLED_APPS`:
 
@@ -31,20 +31,20 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'django_perms_iscore.apps.DjangoPermsIscoreConfig',
+        'fperms_iscore.apps.FPermsIscoreConfig',
         ...
     )
 
-Add django-perms-iscore's URL patterns:
+Add django-fperms-iscore's URL patterns:
 
 .. code-block:: python
 
-    from django_perms_iscore import urls as django_perms_iscore_urls
+    from fperms_iscore import urls as fperms_iscore_urls
 
 
     urlpatterns = [
         ...
-        url(r'^', include(django_perms_iscore_urls)),
+        url(r'^', include(fperms_iscore_urls)),
         ...
     ]
 

@@ -11,7 +11,7 @@ except ImportError:
 
 
 def get_version(*file_paths):
-    """Retrieves the version from django_perms_iscore/__init__.py"""
+    """Retrieves the version from fperms_iscore/__init__.py"""
     filename = os.path.join(os.path.dirname(__file__), *file_paths)
     version_file = open(filename).read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
@@ -21,7 +21,7 @@ def get_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
-version = get_version("django_perms_iscore", "__init__.py")
+version = get_version("fperms_iscore", "__init__.py")
 
 
 if sys.argv[-1] == 'publish':
@@ -45,24 +45,24 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='django-perms-iscore',
+    name='django-fperms-iscore',
     version=version,
     description="""Perms for iscore library """,
     long_description=readme + '\n\n' + history,
     author='Petr Olah',
     author_email='djangoguru@gmail.com',
-    url='https://github.com/Formulka/django-perms-iscore',
+    url='https://github.com/Formulka/django-fperms-iscore',
     packages=[
-        'django_perms_iscore',
+        'fperms_iscore',
     ],
     include_package_data=True,
     install_requires=[
         "django-model-utils>=2.0",
-        "django-perms",
+        "django-fperms",
     ],
     license="MIT",
     zip_safe=False,
-    keywords='django-perms-iscore',
+    keywords='django-fperms-iscore',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
@@ -73,6 +73,6 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     dependency_links=[
-        'https://github.com/formulka/django-perms/tarball/master#egg=django-perms',
+        'https://github.com/formulka/django-fperms/tarball/master#egg=django-fperms',
     ]
 )

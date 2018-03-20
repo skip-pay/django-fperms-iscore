@@ -3,11 +3,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django_perms.models import BasePerm
+from fperms.models import BasePerm
 
-from django_perms_iscore import enums
-from django_perms_iscore.utils import get_iscore_class
-from django_perms_iscore.exceptions import IsCoreDoesNotExist
+from fperms_iscore import enums
+from fperms_iscore.utils import get_iscore_class
+from fperms_iscore.exceptions import IsCoreDoesNotExist
 
 
 class IsCorePerm(BasePerm):

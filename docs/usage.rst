@@ -2,25 +2,25 @@
 Usage
 =====
 
-To use django-perms-iscore in a project, add it to your `INSTALLED_APPS`:
+To use django-fperms-iscore in a project, add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
 
     INSTALLED_APPS = (
         ...
-        'django_perms_iscore.apps.DjangoPermsIscoreConfig',
+        'fperms_iscore.apps.FPermsIscoreConfig',
         ...
     )
 
-Add django-perms-iscore's URL patterns:
+Add fperms-iscore's URL patterns:
 
 .. code-block:: python
 
-    from django_perms_iscore import urls as django_perms_iscore_urls
+    from fperms_iscore import urls as fperms_iscore_urls
 
 
     urlpatterns = [
         ...
-        url(r'^', include(django_perms_iscore_urls)),
+        url(r'^', include(fperms_iscore_urls)),
         ...
     ]

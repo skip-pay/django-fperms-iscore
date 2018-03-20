@@ -1,7 +1,7 @@
 from is_core.main import UIRESTModelISCore
 
 
-from django_perms_iscore.mixins import PermIsCoreMixin
+from fperms_iscore.mixins import PermIsCoreMixin
 
 
 class PermUIRESTModelISCore(PermIsCoreMixin, UIRESTModelISCore):

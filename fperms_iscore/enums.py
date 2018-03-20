@@ -1,6 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
-from django_perms.enums import *
+from fperms.enums import *
 
 PERM_TYPE_CORE = 'core'
 

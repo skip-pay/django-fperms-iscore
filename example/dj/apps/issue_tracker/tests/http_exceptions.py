@@ -6,7 +6,7 @@ from germanium.tools.http import assert_http_unauthorized, assert_http_forbidden
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
 
-from django_perms_iscore.models import IsCorePerm
+from fperms_iscore.models import IsCorePerm
 
 
 class HttpExceptionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase):

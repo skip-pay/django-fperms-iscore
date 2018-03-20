@@ -1,4 +1,4 @@
-from django_perms.exceptions import PermError
+from fperms.exceptions import PermError
 
 
 class IsCoreDoesNotExist(PermError):
