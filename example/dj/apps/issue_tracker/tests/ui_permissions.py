@@ -102,13 +102,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_user_with_permission_may_add_user(self):
-        self.logged_user.user.perms.add(
-            perms=[
-                'core.issue_tracker.IssueIsCore.read',
-                'core.issue_tracker.UserIsCore.read',
-                'core.issue_tracker.UserIsCore.create',
-            ]
-        )
+        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.create')
 
         USERNAME = 'new_nick'
 

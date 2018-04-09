@@ -1,4 +1,6 @@
 https://github.com/Formulka/django-fperms/tarball/master#egg=django-fperms-0.1.0
 
 https://github.com/druids/germanium/tarball/2.0.3#egg=germanium-2.0.3
-https://github.com/matllubos/django-is-core/tarball/2.9.1#egg=django-is-core-2.9.1
+
+django-pyston==2.8.1
+django-is-core==2.10.2
