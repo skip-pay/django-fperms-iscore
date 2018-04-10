@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.test import override_settings
 
 from germanium import config
 from germanium.annotations import login
@@ -102,6 +103,20 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_user_with_permission_may_add_user(self):
+        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.create')
+
+        USERNAME = 'new_nick'
+
+        resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
+                                                            'add-is-user-password': 'password'})
+        assert_http_redirect(resp)
+        assert_true(User.objects.filter(username=USERNAME).exists())
+
+    @override_settings(PERM_AUTO_CREATE=True)
+    @login(is_superuser=False)
+    def test_user_with_permission_may_add_user_auto_create_perm(self):
+        IsCorePerm.objects.all().delete()
+
         self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.create')
 
         USERNAME = 'new_nick'
