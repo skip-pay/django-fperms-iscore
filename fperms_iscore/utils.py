@@ -16,7 +16,7 @@ def get_iscore_class_str(cls):
 
 
 def get_iscore_class(class_str):
-    app_label, core = class_str.split('.', 1)
+    app_label, core = class_str.rsplit('.', 1)
     core_module_path = '.'.join((app_label, CORE_MODULE_NAME))
 
     module = importlib.import_module(core_module_path)

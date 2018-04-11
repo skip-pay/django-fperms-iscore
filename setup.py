@@ -73,6 +73,6 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     dependency_links=[
-        'https://github.com/formulka/django-fperms/tarball/0.2.0#egg=django-fperms-0.2.0',
+        'https://github.com/formulka/django-fperms/tarball/0.2.1#egg=django-fperms-0.2.1',
     ]
 )
