@@ -3,7 +3,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from fperms.models import BasePerm
+from fperms.base import BasePerm
+from fperms.managers import RelatedPermManager
 
 from fperms_iscore import enums
 from fperms_iscore.utils import get_iscore_class
@@ -20,7 +21,10 @@ class IsCorePerm(BasePerm):
         max_length=100,
     )
 
+    related_manager = RelatedPermManager()
+
     class Meta:
+        base_manager_name = 'related_manager'
         unique_together = (
             ('type', 'codename', 'content_type', 'object_id', 'field_name', 'core'),
         )

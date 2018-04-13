@@ -39,7 +39,7 @@ class HttpExceptionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase):
 
     @login(is_superuser=False)
     def test_404_exception(self):
-        self.logged_user.user.perms.add('core.issue_tracker.IssueIsCore.read')
+        self.logged_user.user.perms.add_perm('core.issue_tracker.IssueIsCore.read')
         for accept_type in self.ACCEPT_TYPES:
             resp = self.get('%s%s/' % (self.ISSUE_API_URL, 5), headers={'HTTP_ACCEPT': accept_type})
             assert_in(accept_type, resp['Content-Type'])

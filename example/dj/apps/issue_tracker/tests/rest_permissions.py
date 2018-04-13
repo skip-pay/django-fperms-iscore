@@ -44,7 +44,7 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, RESTAuthMixin, HelperTestCase
 
     @login(is_superuser=False)
     def test_user_can_read_all_user_data(self):
-        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.read')
+        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.read')
         [self.get_user_obj() for _ in range(5)]
 
         resp = self.get(self.USER_API_URL)

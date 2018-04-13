@@ -46,7 +46,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_ouser_can_read_users_grid(self):
-        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.read')
+        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.read')
         resp = self.get(self.USER_UI_URL)
         assert_http_ok(resp)
 
@@ -103,7 +103,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
 
     @login(is_superuser=False)
     def test_user_with_permission_may_add_user(self):
-        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.create')
+        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.create')
 
         USERNAME = 'new_nick'
 
@@ -117,7 +117,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
     def test_user_with_permission_may_add_user_auto_create_perm(self):
         IsCorePerm.objects.all().delete()
 
-        self.logged_user.user.perms.add('core.issue_tracker.UserIsCore.create')
+        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.create')
 
         USERNAME = 'new_nick'
 

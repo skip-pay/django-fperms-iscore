@@ -22,3 +22,5 @@ STATIC_ROOT = ''
 STATICFILES_DIRS = (
     STATICFILES_ROOT,
 )
+
+SECRET_KEY = "x@lxcáv=ewkfsůdspigusd=skdlůsdpis=dés=kk"

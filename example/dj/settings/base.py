@@ -143,7 +143,6 @@ INSTALLED_APPS = (
     'is_core.auth_token',
     'block_snippets',
 
-    'fperms.apps.FPermsConfig',
     'fperms_iscore.apps.FPermsIscoreConfig',
 )
 

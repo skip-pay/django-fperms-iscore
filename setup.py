@@ -57,8 +57,8 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "django-model-utils>=2.0",
-        "django-fperms",
+        "django-fperms==0.4.0",
+        "django-is-core==2.10.2",
     ],
     license="MIT",
     zip_safe=False,
@@ -67,12 +67,14 @@ setup(
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
         'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     dependency_links=[
-        'https://github.com/formulka/django-fperms/tarball/0.2.1#egg=django-fperms-0.2.1',
+        'https://github.com/formulka/django-fperms/tarball/0.4.0#egg=django-fperms-0.4.0',
     ]
 )
