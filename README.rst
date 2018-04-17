@@ -2,8 +2,8 @@
 django-fperms-iscore
 =============================
 
-.. image:: https://badge.fury.io/py/fperms-iscore.svg
-    :target: https://badge.fury.io/py/fperms-iscore
+.. image:: https://badge.fury.io/py/django-fperms-iscore.svg
+    :target: https://badge.fury.io/py/django-fperms-iscore
 
 .. image:: https://travis-ci.org/Formulka/django-fperms-iscore.svg?branch=master
     :target: https://travis-ci.org/Formulka/django-fperms-iscore
@@ -24,7 +24,7 @@ Quickstart
 
 Install django-fperms-iscore::
 
-    pip install https://github.com/formulka/django-fperms/tarball/master#egg=django-fperms-master --process-dependency-links
+    pip install django-fperms-iscore
 
 Add it to your `INSTALLED_APPS`:
 
@@ -60,7 +60,7 @@ You can create a new permission directly via its model or via a specially format
         codename='create',
         core='issue_tracker.IssueIsCore',
     )
-    IsCorePerm.objects.create_from_str('core.issue_tracker.IssueIsCore.read')
+    IsCorePerm.objects.create_from_str('core.issue_tracker.IssueIsCore.create')
 
 **Assigning a permission**:
 
