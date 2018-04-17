@@ -52,13 +52,14 @@ setup(
     author='Petr Olah',
     author_email='djangoguru@gmail.com',
     url='https://github.com/Formulka/django-fperms-iscore',
+    download_url='https://github.com/formulka/django-fperms-iscore/archive/{}.tar.gz'.format(version),
     packages=[
         'fperms_iscore',
     ],
     include_package_data=True,
     install_requires=[
         "django-fperms==0.4.0",
-        "django-is-core==2.10.2",
+        "django-is-core==2.11.1",
     ],
     license="MIT",
     zip_safe=False,
@@ -71,10 +72,8 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-    ],
-    dependency_links=[
-        'https://github.com/formulka/django-fperms/tarball/0.4.0#egg=django-fperms-0.4.0',
     ]
 )
