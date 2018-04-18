@@ -1,16 +1,14 @@
 import importlib
 
-from django.apps import apps
-
 
 CORE_MODULE_NAME = 'cores'
 
 
 def get_iscore_class_str(cls):
-    app_config = apps.get_containing_app_config(cls.__module__)
+    path, _ = cls.__module__.rsplit('.{}'.format(CORE_MODULE_NAME), 1)
     core = cls.__name__
-    return '{app_label}.{core}'.format(
-        app_label=app_config.label,
+    return '{path}.{core}'.format(
+        path=path,
         core=core,
     )
 
