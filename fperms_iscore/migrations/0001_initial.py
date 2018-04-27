@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(blank=True, max_length=255, null=True, verbose_name='name')),
                 ('object_id', models.SmallIntegerField(blank=True, null=True, verbose_name='object pk')),
                 ('field_name', models.CharField(blank=True, max_length=100, null=True, verbose_name='field name')),
-                ('core', models.CharField(max_length=100, verbose_name='core')),
+                ('core', models.CharField(blank=True, null=True, max_length=100, verbose_name='core')),
                 ('content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType', verbose_name='content type')),
                 ('groups', models.ManyToManyField(blank=True, related_name='perms', to='auth.Group')),
                 ('users', models.ManyToManyField(blank=True, related_name='perms', to=settings.AUTH_USER_MODEL)),

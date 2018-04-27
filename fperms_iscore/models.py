@@ -19,6 +19,8 @@ class IsCorePerm(BasePerm):
     core = models.CharField(
         _('core'),
         max_length=100,
+        null=True,
+        blank=True,
     )
 
     related_manager = RelatedPermManager()
