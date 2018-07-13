@@ -2,5 +2,5 @@
 from django.apps import AppConfig
 
 
-class FPermsIscoreConfig(AppConfig):
+class FPermsIScoreConfig(AppConfig):
     name = 'fperms_iscore'

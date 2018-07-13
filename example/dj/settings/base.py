@@ -99,7 +99,7 @@ MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'is_core.auth_token.middleware.TokenAuthenticationMiddlewares',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'is_core.middleware.RequestKwargsMiddleware',
     'is_core.middleware.HTTPExceptionsMiddleware',
@@ -140,10 +140,10 @@ INSTALLED_APPS = (
 
     # IS
     'is_core',
-    'is_core.auth_token',
     'block_snippets',
 
-    'fperms_iscore.apps.FPermsIscoreConfig',
+    'fperms.apps.FPermsConfig',
+    'fperms_iscore.apps.FPermsIScoreConfig',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -219,8 +219,3 @@ TEMPLATES = [
         },
     },
 ]
-
-PYSTON_PARTIAL_PUT_UPDATE = True
-PYSTON_PARTIAL_RELATED_UPDATE = True
-
-PERM_MODEL = 'fperms_iscore.IsCorePerm'
