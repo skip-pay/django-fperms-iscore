@@ -10,9 +10,13 @@ env:
   - DJANGO=1.11
   - DJANGO=2.0
 
-install: pip install -r requirements_test.txt
+install:
+  - cd example
+  - pip install -q Django==$DJANGO
+  - pip install -r requirements/base.txt
 
-script: tox
+script:
+   coverage run --omit */site-packages/*,*/migrations/*,*/lib/* manage.py test issue_tracker.tests --settings=dj.settings -v 2
 
 after_success:
   - codecov -e DJANGO

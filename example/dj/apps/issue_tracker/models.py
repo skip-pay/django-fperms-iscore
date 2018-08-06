@@ -20,7 +20,7 @@ class Issue(models.Model):
                                   related_name='leading_issue', on_delete=models.CASCADE)
 
     def watched_by_string(self):
-        return ', '.join(self.watched_by.all())
+        return ', '.join((str(u) for u in self.watched_by.all()))
     watched_by_string.order_by = 'watched_by'
 
     def __unicode__(self):

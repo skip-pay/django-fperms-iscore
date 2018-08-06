@@ -1,6 +1,11 @@
+from io import StringIO
+
 from django.contrib.auth.models import User
+from django.core.management import call_command
 
 from germanium.test_cases.auth import UserProxy
+
+from .factories import UserFactory, IssueFactory
 
 
 class HelperTestCase(object):
@@ -32,18 +37,22 @@ class HelperTestCase(object):
             del result[field]
         return result
 
-    def get_user_obj(self):
-        user_data = self.get_user_data()
-        return User.objects._create_user(user_data.get('username'), user_data.get('email'),
-                                         user_data.get('password'), is_staff=False, is_superuser=False)
+    def create_user(self, username, email, password, **kwargs):
+        return UserFactory(username=username, email=email, password=password, **kwargs)
+
+    def create_issue(self, **kwargs):
+        return IssueFactory(**kwargs)
+
+    def sync_permissions(self):
+        call_command('sync_permissions', stdout=StringIO())
 
 
 class AsSuperuserTestCase(object):
 
-    def get_user(self, is_superuser):
+    def get_user(self, is_superuser, is_staff=True):
         username = 'user'
         password = 'super secret password'
         email = 'user@test.cz'
         return UserProxy(username, password,
-                         User.objects._create_user(username, email, password, is_staff=False,
+                         User.objects._create_user(username, email, password, is_staff=is_staff,
                                                    is_superuser=is_superuser))

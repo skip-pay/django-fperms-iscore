@@ -10,11 +10,10 @@ VIRTUAL_ENV = var/ve
 LOCALPATH = $(CURDIR)
 PYTHONPATH = $(LOCALPATH)/$(DJANGO_DIR)
 DJANGO_TEST_PORTS = 9000-10000
-SETTINGS = settings
-DJANGO_SETTINGS_MODULE = $(DJANGO_DIR).settings.$(SETTINGS)
+DJANGO_SETTINGS_MODULE = $(DJANGO_DIR).settings
 DJANGO_POSTFIX = --settings=$(DJANGO_SETTINGS_MODULE) --pythonpath=$(PYTHONPATH)
 PYTHON_BIN = $(VIRTUAL_ENV)/bin
-PYTHON_VERSION_MAJOR = 3.6
+PYTHON_VERSION_MAJOR = 3.7
 PYTHON = python$(PYTHON_VERSION_MAJOR)
 TYPE = dev
 OS = $(shell uname)
@@ -39,7 +38,6 @@ cleanall: cleanvar
 
 pip:
 	$(PYTHON_BIN)/pip install -r requirements/local.txt
-	$(PYTHON_BIN)/pip install -r requirements/dependency_base.txt
 	$(PYTHON_BIN)/pip install -r requirements/base.txt
 
 initvirtualenv:
@@ -95,17 +93,18 @@ runserver:
 	$(PYTHON_BIN)/python manage.py runserver --insecure $(DJANGO_POSTFIX)
 
 schemamigration:
-ifeq ($(force), 1)
-	-rm -rf "dj/apps/$(app)/migrations"
-	$(PYTHON_BIN)/python manage.py schemamigration $(app) --initial $(DJANGO_POSTFIX)
-else ifneq ($(wildcard dj/apps/$(app)/migrations/0001_*),)
-	$(PYTHON_BIN)/python manage.py schemamigration $(app) --auto $(DJANGO_POSTFIX)
+ifdef name
+	$(PYTHON_BIN)/python manage.py makemigrations $(app) --name $(name) $(DJANGO_POSTFIX)
 else
-	$(PYTHON_BIN)/python manage.py schemamigration $(app) --initial $(DJANGO_POSTFIX)
+	$(PYTHON_BIN)/python manage.py makemigrations $(app) $(DJANGO_POSTFIX)
 endif
 
 datamigration:
-	$(PYTHON_BIN)/python manage.py datamigration $(app) $(name) $(DJANGO_POSTFIX)
+ifdef name
+	$(PYTHON_BIN)/python manage.py makemigrations $(app) --empty --name $(name) $(DJANGO_POSTFIX)
+else
+	$(PYTHON_BIN)/python manage.py makemigrations $(app) --empty $(DJANGO_POSTFIX)
+endif
 
 install: cleanvar bootstrap initlog initdb syncdb initdata initenv
 

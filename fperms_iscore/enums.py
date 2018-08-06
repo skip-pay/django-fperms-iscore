@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from fperms.enums import *
 
+
 PERM_TYPE_CORE = 'is_core'
 
 IS_CORE_PERM_TYPE_CHOICES = (

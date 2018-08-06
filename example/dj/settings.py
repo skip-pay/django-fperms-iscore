@@ -7,11 +7,10 @@ except ImportError:
     def _(val): return val
 
 PROJECT_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..')
+    os.path.join(os.path.dirname(__file__), '..')
 )
 
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+DEBUG = TEMPLATE_DEBUG = THUMBNAIL_DEBUG = True
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -67,7 +66,7 @@ MEDIA_URL = '/media/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATICFILES_ROOT = os.path.join(PROJECT_DIR, 'static')
-STATIC_ROOT = STATICFILES_ROOT
+STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -75,7 +74,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-
+    STATICFILES_ROOT,
 )
 
 # List of finder classes that know how to find static files in
@@ -143,7 +142,7 @@ INSTALLED_APPS = (
     'block_snippets',
 
     'fperms.apps.FPermsConfig',
-    'fperms_iscore.apps.FPermsIScoreConfig',
+    'fperms_iscore.apps.FPermsISCoreConfig',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -219,3 +218,17 @@ TEMPLATES = [
         },
     },
 ]
+
+ALLOWED_HOSTS = ['localhost']
+
+# URL with protocol (and port)
+PROJECT_URL = 'localhost:8000'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_DIR, 'var', 'db', 'sqlite.db'),
+        'USER': '',
+        'PASSWORD': '',
+    },
+}
