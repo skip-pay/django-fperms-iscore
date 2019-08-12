@@ -1,5 +1,3 @@
-from .commands import *  # NOQA
-from .http_exceptions import *  # NOQA
-from .models import *  # NOQA
-from .rest_permissions import *  # NOQA
-from .ui_permissions import *  # NOQA
+from .commands import CommandsTestCase
+from .ui_permissions import UIPermissionsTestCase
+from .rest_permissions import RESTPermissionsTestCase

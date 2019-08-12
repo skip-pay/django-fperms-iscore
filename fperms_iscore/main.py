@@ -1,10 +1,8 @@
 from is_core.main import UIRESTModelISCore
 
+from fperms_iscore.mixins import PermISCoreMixin
 
-from fperms_iscore.mixins import PermIsCoreMixin
 
-
-class PermUIRESTModelISCore(PermIsCoreMixin, UIRESTModelISCore):
+class PermUIRESTModelISCore(PermISCoreMixin, UIRESTModelISCore):
 
     abstract = True
-

@@ -1,127 +1,103 @@
-from django.contrib.auth.models import User
-from django.test import override_settings
-
-from germanium import config
-from germanium.annotations import login
+from germanium.decorators import login
 from germanium.test_cases.client import ClientTestCase
-from germanium.tools import assert_true, assert_false, assert_equal, assert_not_equal
-from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden
+from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
 
-from fperms_iscore.models import IsCorePerm
+from fperms.models import Perm
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
 
 class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase):
-    USER_UI_URL = '/user/'
-
-    def set_up(self):
-        IsCorePerm.objects.create_from_str(
-            perms=[
-                'core.issue_tracker.IssueIsCore.read',
-                'core.issue_tracker.IssueIsCore.create',
-                'core.issue_tracker.UserIsCore.read',
-                'core.issue_tracker.UserIsCore.create',
-                'core.issue_tracker.UserIsCore.update',
-            ]
-        )
 
     def authorize(self, username, password):
-        resp = self.post(config.LOGIN_URL, {config.USERNAME: username, config.PASSWORD: password})
+        resp = self.post('/login/', {'username': username, 'password': password})
         assert_http_redirect(resp)
 
     def test_non_logged_user_should_receive_302(self):
-        resp = self.get(self.USER_UI_URL)
+        resp = self.get('/user/')
         assert_http_redirect(resp)
 
     @login(is_superuser=False)
-    def test_home_view_should_return_ok(self):
+    def test_home_view_should_return_ok_for_all_users(self):
+        resp = self.get('/')
+        assert_http_ok(resp)
+
+    @login(is_superuser=False)
+    def test_home_view_should_return_ok_for_superuser(self):
         resp = self.get('/')
         assert_http_ok(resp)
 
     @login(is_superuser=True)
-    def test_superuser_may_read_users_grid(self):
-        resp = self.get(self.USER_UI_URL)
-        assert_http_ok(resp)
+    def test_superuser_should_do_all_operations(self):
+        issue = self.create_issue()
+        user = self.create_user('new_user', 'password', 'test@email.com')
+
+        # List
+        assert_http_ok(self.get('/user/'))
+        assert_http_ok(self.get('/issue/'))
+
+        # Add
+        assert_http_ok(self.get('/user/add/'))
+        assert_http_ok(self.get('/issue/add/'))
+        assert_http_ok(self.post('/user/add/', {}))
+        assert_http_ok(self.post('/issue/add/', {}))
+
+        # Detail
+        assert_http_ok(self.get('/user/{}/'.format(user.pk)))
+        assert_http_ok(self.get('/issue/{}/'.format(issue.pk)))
+        assert_http_ok(self.post('/user/{}/'.format(user.pk), {}))
+        assert_http_ok(self.post('/issue/{}/'.format(issue.pk), {}))
 
     @login(is_superuser=False)
-    def test_ouser_can_read_users_grid(self):
-        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.read')
-        resp = self.get(self.USER_UI_URL)
-        assert_http_ok(resp)
+    def test_user_without_permission_should_do_nothing(self):
+        issue = self.create_issue()
+        user = self.create_user('new_user', 'password', 'test@email.com')
 
-    @login(is_superuser=True)
-    def test_superuser_may_edit_user(self):
-        user = self.get_user_obj()
-        resp = self.get('%s%s/' % (self.USER_UI_URL, user.pk))
-        assert_http_ok(resp)
+        # List
+        assert_http_forbidden(self.get('/user/'))
+        assert_http_forbidden(self.get('/issue/'))
 
-        CHANGED_USERNAME = 'changed_nick'
-        self.post('%s%s/' % (self.USER_UI_URL, user.pk), data={'edit-is-user-username': CHANGED_USERNAME})
-        assert_http_ok(resp)
-        assert_equal(User.objects.get(pk=user.pk).username, CHANGED_USERNAME)
+        # Add
+        assert_http_forbidden(self.get('/user/add/'))
+        assert_http_forbidden(self.get('/issue/add/'))
+        assert_http_forbidden(self.post('/user/add/', {}))
+        assert_http_forbidden(self.post('/issue/add/', {}))
 
-    @login(is_superuser=False)
-    def test_only_superuser_may_edit_user(self):
-        user = self.get_user_obj()
-        resp = self.get('%s%s/' % (self.USER_UI_URL, user.pk))
-        assert_http_forbidden(resp)
-
-        CHANGED_USERNAME = 'changed_nick'
-        self.post('%s%s/' % (self.USER_UI_URL, user.pk), data={'edit-is-user-username': CHANGED_USERNAME})
-        assert_http_forbidden(resp)
-        assert_not_equal(User.objects.get(pk=user.pk).username, CHANGED_USERNAME)
+        # Detail
+        assert_http_forbidden(self.get('/user/{}/'.format(user.pk)))
+        assert_http_forbidden(self.get('/issue/{}/'.format(issue.pk)))
+        assert_http_forbidden(self.post('/user/{}/'.format(user.pk), {}))
+        assert_http_forbidden(self.post('/issue/{}/'.format(issue.pk), {}))
 
     @login(is_superuser=False)
-    def test_user_may_edit_itself(self):
-        user = self.logged_user.user
-        resp = self.get('%s%s/' % (self.USER_UI_URL, user.pk))
-        assert_http_ok(resp)
+    def test_user_with_permission_should_do_allowed_operations(self):
+        self.sync_permissions()
+        issue = self.create_issue()
+        user = self.create_user('new_user', 'password', 'test@email.com')
 
-        CHANGED_USERNAME = 'changed_nick'
-        self.post('%s%s/' % (self.USER_UI_URL, user.pk), data={'edit-is-user-username': CHANGED_USERNAME})
-        assert_http_ok(resp)
-        assert_equal(User.objects.get(pk=user.pk).username, CHANGED_USERNAME)
+        logged_user = self.logged_user.user
 
-    @login(is_superuser=True)
-    def test_superuser_may_add_user(self):
-        USERNAME = 'new_nick'
+        issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
+        issue_create_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'create'))
+        user_delete_permission = Perm.objects.get(codename='{}__{}'.format('user', 'delete'))
+        user_update_permission = Perm.objects.get(codename='{}__{}'.format('user', 'update'))
 
-        resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
-                                                            'add-is-user-password': 'password'})
-        assert_http_redirect(resp)
-        assert_true(User.objects.filter(username=USERNAME).exists())
+        logged_user.perms.add(
+            issue_read_permission, issue_create_permission, user_delete_permission, user_update_permission
+        )
 
-    @login(is_superuser=False)
-    def test_only_superuser_may_add_user(self):
-        USERNAME = 'new_nick'
+        # List
+        assert_http_forbidden(self.get('/user/'))
+        assert_http_ok(self.get('/issue/'))
 
-        resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
-                                                            'add-is-user-password': 'password'})
-        assert_http_forbidden(resp)
-        assert_false(User.objects.filter(username=USERNAME).exists())
+        # Add
+        assert_http_forbidden(self.get('/user/add/'))
+        assert_http_ok(self.get('/issue/add/'))
+        assert_http_forbidden(self.post('/user/add/', {}))
+        assert_http_ok(self.post('/issue/add/', {}))
 
-    @login(is_superuser=False)
-    def test_user_with_permission_may_add_user(self):
-        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.create')
-
-        USERNAME = 'new_nick'
-
-        resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
-                                                            'add-is-user-password': 'password'})
-        assert_http_redirect(resp)
-        assert_true(User.objects.filter(username=USERNAME).exists())
-
-    @override_settings(PERM_AUTO_CREATE=True)
-    @login(is_superuser=False)
-    def test_user_with_permission_may_add_user_auto_create_perm(self):
-        IsCorePerm.objects.all().delete()
-
-        self.logged_user.user.perms.add_perm('core.issue_tracker.UserIsCore.create')
-
-        USERNAME = 'new_nick'
-
-        resp = self.post('%sadd/' % self.USER_UI_URL, data={'add-is-user-username': USERNAME,
-                                                            'add-is-user-password': 'password'})
-        assert_http_redirect(resp)
-        assert_true(User.objects.filter(username=USERNAME).exists())
+        # Detail
+        assert_http_ok(self.get('/user/{}/'.format(user.pk)))
+        assert_http_ok(self.get('/issue/{}/'.format(issue.pk)))
+        assert_http_ok(self.post('/user/{}/'.format(user.pk), {}))
+        assert_http_forbidden(self.post('/issue/{}/'.format(issue.pk), {}))

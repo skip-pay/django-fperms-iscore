@@ -1,5 +1,0 @@
-django-fperms==0.4.2
-https://github.com/druids/germanium/tarball/2.0.5#egg=germanium-2.0.5
-
-django-pyston==2.8.1
-django-is-core==2.10.2
