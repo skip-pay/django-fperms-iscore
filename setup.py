@@ -58,8 +58,8 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "django-fperms==0.4.3",
-        "django-is-core==2.11.1",
+        "django-fperms==0.4.4",
+        "django-is-core==2.18.0",
     ],
     license="MIT",
     zip_safe=False,
