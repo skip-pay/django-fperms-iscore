@@ -58,7 +58,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "django-fperms==0.4.4",
+        "django-fperms==0.4.5",
         "django-is-core==2.18.0",
     ],
     license="MIT",
