@@ -14,6 +14,9 @@ Perm = get_perm_model()
 permissions = {}
 
 
+GENERAL_CACHE_NAME = '__all__'
+
+
 class FPermPermission(IsAuthenticated):
 
     def __init__(self, name, verbose_name=None, register=True):
@@ -35,11 +38,10 @@ class FPermPermission(IsAuthenticated):
         request._permissions_cache = getattr(request, '_permissions_cache', {})
         return request._permissions_cache
 
-    def _add_to_cache(self, request, obj, has_perm):
-        key = (request.user.pk, obj.pk if obj else None)
+    def _add_to_cache(self, request, key, has_perm):
         self._get_cache(request).setdefault(self.name, {})[key] = has_perm
 
-    def _get_perm(self, obj):
+    def _get_perm(self, obj=None):
         """
         Return permission according to permission name and object ID (if permission is related to some object)
         if permission is not found the None value is returned.
@@ -56,21 +58,32 @@ class FPermPermission(IsAuthenticated):
                 Q(object_id=None)
             )
         )
-        try:
-            return perms.get()
-        except Perm.DoesNotExist:
-            return None
+        return perms.order_by('-object_id').first()
 
     def has_permission(self, name, request, view, obj=None):
         """
         Return `True` if user has set permission of is superuser
         """
+        cache = self._get_cache(request).get(self.name, {})
         if not super().has_permission(name, request, view, obj):
             return False
+        elif obj is None:
+            has_general_perm = cache.get(GENERAL_CACHE_NAME)
+            if has_general_perm is None:
+                has_general_perm = request.user.perms.has_perm(self._get_perm())
+                self._add_to_cache(request, GENERAL_CACHE_NAME, has_general_perm)
+            return has_general_perm
         else:
-            try:
-                return self._get_cache(request)[self.name][(request.user.pk, obj.pk if obj else None)]
-            except KeyError:
-                 has_perm = request.user.perms.has_perm(self._get_perm(obj=obj))
-                 self._add_to_cache(request, obj, has_perm)
-                 return has_perm
+            has_general_perm = cache.get(GENERAL_CACHE_NAME)
+            if has_general_perm:
+                return has_general_perm
+
+            has_obj_perm = cache.get(str(obj.pk))
+            if has_obj_perm is None:
+                perm = self._get_perm(obj=obj)
+                has_obj_perm = request.user.perms.has_perm(perm)
+                self._add_to_cache(request, str(obj.pk), has_obj_perm)
+                if perm and not perm.object_id:
+                    # Object perm is same as general perm
+                    self._add_to_cache(request, GENERAL_CACHE_NAME, has_obj_perm)
+            return has_obj_perm
