@@ -110,4 +110,4 @@ install: cleanvar bootstrap initlog initdb syncdb initdata initenv
 
 update: clean cleanvirtualenv bootstrap syncdb initenv
 
-include build/Makefile.$(OS)
+-include build/Makefile.$(OS)
