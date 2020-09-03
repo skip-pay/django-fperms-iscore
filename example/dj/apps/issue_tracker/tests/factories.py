@@ -1,12 +1,13 @@
 import factory
 from factory import fuzzy
+from factory.django import DjangoModelFactory
 
 from django.contrib.auth.models import User
 
 from issue_tracker.models import Issue
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
 
     username = factory.Faker('user_name')
     password = fuzzy.FuzzyText(length=10)
@@ -23,7 +24,7 @@ class UserFactory(factory.DjangoModelFactory):
         model = User
 
 
-class IssueFactory(factory.DjangoModelFactory):
+class IssueFactory(DjangoModelFactory):
 
     name = fuzzy.FuzzyText(length=10)
     created_by = factory.SubFactory(UserFactory)

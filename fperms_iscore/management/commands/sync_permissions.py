@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
+from django.db.models import F
+from django.utils.translation import ugettext
 
 from chamber.utils.decorators import translation_activate_block
-
-from is_core.site import get_cores
 
 from fperms import get_perm_model
 
@@ -17,14 +17,55 @@ class Command(BaseCommand):
 
     help = 'Synchronize fperms permissions with database'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--clean-obsolete', action='store_true', dest='clean_obsolete', default=False,
+                            help='Remove obsolete permissions if it was used.')
+
     @translation_activate_block
-    def handle(self, *args, **kwargs):
+    def handle(self, **options):
+        self.stdout.write('Syncing permissions')
+        updated_permission_pks = set()
+        created_permission_pks = set()
         for permission in permissions.values():
-            Perm.objects.update_or_create(
+            perm, created = Perm.objects.update_or_create(
                 type=enums.PERM_TYPE_CORE,
                 codename=permission.name,
                 defaults={
                     'name': permission.verbose_name
                 }
             )
-        self.stdout.write('{} FPerm permissions was updated'.format(len(permissions)))
+            if created:
+                created_permission_pks.add(perm.pk)
+            else:
+                updated_permission_pks.add(perm.pk)
+        self.stdout.write(' Updated: {}'.format(len(updated_permission_pks)))
+        self.stdout.write(' Created: {}'.format(len(created_permission_pks)))
+
+        self.stdout.write('Removing unused permissions')
+        nonexistent_unused_permissions_qs = Perm.objects.exclude(
+            pk__in=updated_permission_pks | created_permission_pks
+        ).filter(
+            groups__isnull=True, users__isnull=True
+        )
+        count = nonexistent_unused_permissions_qs.count()
+        nonexistent_unused_permissions_qs.delete()
+        self.stdout.write(' Removed: {}'.format(count))
+
+        nonexistent_used_permissions_qs = Perm.objects.exclude(
+            pk__in=updated_permission_pks | created_permission_pks
+        )
+        if options.get('clean_obsolete'):
+            self.stdout.write('Removing used permissions')
+            count = nonexistent_used_permissions_qs.count()
+            nonexistent_used_permissions_qs.delete()
+            self.stdout.write(' Removed: {}'.format(count))
+        elif nonexistent_used_permissions_qs.exists():
+            self.stderr.write(
+                'Found used obsolete permissions, run command with "--clean-obsolete" parameter for cleaning'
+            )
+            obsolete_string = _(' (obsolete)')
+            nonexistent_used_permissions_qs.exclude(
+                name__endswith=obsolete_string
+            ).update(
+                name=F('name') + obsolete_string
+            )
