@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from django.db.models import F
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from django.utils.translation import ugettext
 
 from chamber.utils.decorators import translation_activate_block
@@ -67,5 +68,5 @@ class Command(BaseCommand):
             nonexistent_used_permissions_qs.exclude(
                 name__endswith=obsolete_string
             ).update(
-                name=F('name') + obsolete_string
+                name=Concat(F('name'), Value(obsolete_string))
             )
