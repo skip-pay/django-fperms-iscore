@@ -63,7 +63,7 @@ class Command(BaseCommand):
             self.stderr.write(
                 'Found used obsolete permissions, run command with "--clean-obsolete" parameter for cleaning'
             )
-            obsolete_string = _(' (obsolete)')
+            obsolete_string = ugettext(' (obsolete)')
             nonexistent_used_permissions_qs.exclude(
                 name__endswith=obsolete_string
             ).update(
