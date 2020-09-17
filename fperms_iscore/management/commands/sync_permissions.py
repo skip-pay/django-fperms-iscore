@@ -54,7 +54,7 @@ class Command(BaseCommand):
         nonexistent_unused_permissions_qs = Perm.objects.exclude(
             pk__in=updated_permission_pks | created_permission_pks | unchanged_permissions_pks
         ).filter(
-            groups__isnull=True, users__isnull=True
+            fgroups__isnull=True, users__isnull=True
         )
         count = nonexistent_unused_permissions_qs.count()
         nonexistent_unused_permissions_qs.delete()

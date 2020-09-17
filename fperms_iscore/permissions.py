@@ -70,7 +70,7 @@ class FPermPermission(IsAuthenticated):
         elif obj is None:
             has_general_perm = cache.get(GENERAL_CACHE_NAME)
             if has_general_perm is None:
-                has_general_perm = request.user.perms.has_perm(self._get_perm())
+                has_general_perm = request.user.fperms.has_perm(self._get_perm())
                 self._add_to_cache(request, GENERAL_CACHE_NAME, has_general_perm)
             return has_general_perm
         else:
@@ -81,7 +81,7 @@ class FPermPermission(IsAuthenticated):
             has_obj_perm = cache.get(str(obj.pk))
             if has_obj_perm is None:
                 perm = self._get_perm(obj=obj)
-                has_obj_perm = request.user.perms.has_perm(perm)
+                has_obj_perm = request.user.fperms.has_perm(perm)
                 self._add_to_cache(request, str(obj.pk), has_obj_perm)
                 if perm and not perm.object_id:
                     # Object perm is same as general perm

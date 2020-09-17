@@ -67,7 +67,7 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase)
         user_delete_permission = Perm.objects.get(codename='{}__{}'.format('user', 'delete'))
         user_update_permission = Perm.objects.get(codename='{}__{}'.format('user', 'update'))
 
-        logged_user.perms.add(
+        logged_user.fperms.add(
             issue_read_permission, issue_create_permission, user_delete_permission, user_update_permission
         )
 
