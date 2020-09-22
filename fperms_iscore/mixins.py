@@ -8,10 +8,10 @@ class PermISCoreMixin:
     default_permission_classes = ()
 
     default_permission_verbose_names = {
-        'read': _('Can read {model_verbose_name_plural}'),
-        'update': _('Can update {model_verbose_name_plural}'),
-        'delete': _('Can delete {model_verbose_name_plural}'),
-        'create': _('Can create {model_verbose_name_plural}'),
+        'read': _('Can read objects "{model_verbose_name}"'),
+        'update': _('Can update objects "{model_verbose_name}"'),
+        'delete': _('Can delete objects "{model_verbose_name}"'),
+        'create': _('Can create objects "{model_verbose_name}"'),
     }
 
     def _get_permission_verbose_name(self, permission_name):
@@ -22,7 +22,8 @@ class PermISCoreMixin:
         """
         verbose_name = self.default_permission_verbose_names.get(permission_name)
         return verbose_name.format(
-            model_verbose_name_plural=self.model._meta.verbose_name_plural.lower()
+            model_verbose_name_plural=self.model._meta.verbose_name_plural,
+            model_verbose_name=self.model._meta.verbose_name
         ) if verbose_name else verbose_name
 
     def _get_default_permission(self, name):

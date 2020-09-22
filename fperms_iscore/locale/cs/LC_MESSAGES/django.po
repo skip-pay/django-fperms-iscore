@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-30 19:40+0200\n"
+"POT-Creation-Date: 2020-09-21 20:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,26 +30,26 @@ msgstr "vytvořit"
 msgid "read"
 msgstr "číst"
 
-#: management/commands/sync_permissions.py:66
+#: management/commands/sync_permissions.py:67
 msgid " (obsolete)"
 msgstr " (bez funkce)"
 
 #: mixins.py:11
 #, python-brace-format
-msgid "Can read {model_verbose_name_plural}"
-msgstr "Může číst {model_verbose_name_plural}"
+msgid "Can read objects \"{model_verbose_name}\""
+msgstr "Může číst objekty \"{model_verbose_name}\""
 
 #: mixins.py:12
 #, python-brace-format
-msgid "Can update {model_verbose_name_plural}"
-msgstr "Může upravit {model_verbose_name_plural}"
+msgid "Can update objects \"{model_verbose_name}\""
+msgstr "Může upravit objekty \"{model_verbose_name}\""
 
 #: mixins.py:13
 #, python-brace-format
-msgid "Can delete {model_verbose_name_plural}"
-msgstr "Může smazat {model_verbose_name_plural}"
+msgid "Can delete objects \"{model_verbose_name}\""
+msgstr "Může mazat objekty \"{model_verbose_name}\""
 
 #: mixins.py:14
 #, python-brace-format
-msgid "Can create {model_verbose_name_plural}"
-msgstr "Může vytvořit {model_verbose_name_plural}"
+msgid "Can create objects \"{model_verbose_name}\""
+msgstr "Může vytvořit objekty \"{model_verbose_name}\""
