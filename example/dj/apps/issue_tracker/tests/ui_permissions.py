@@ -1,8 +1,10 @@
+from django.test import override_settings
+
 from germanium.decorators import login
 from germanium.test_cases.client import ClientTestCase
 from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
 
-from fperms.models import Perm
+from fperms.models import Perm, Group
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
@@ -82,7 +84,7 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
         user_delete_permission = Perm.objects.get(codename='{}__{}'.format('user', 'delete'))
         user_update_permission = Perm.objects.get(codename='{}__{}'.format('user', 'update'))
 
-        logged_user.perms.add(
+        logged_user.fperms.add(
             issue_read_permission, issue_create_permission, user_delete_permission, user_update_permission
         )
 
@@ -101,3 +103,70 @@ class UIPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, ClientTestCase)
         assert_http_ok(self.get('/issue/{}/'.format(issue.pk)))
         assert_http_ok(self.post('/user/{}/'.format(user.pk), {}))
         assert_http_forbidden(self.post('/issue/{}/'.format(issue.pk), {}))
+
+    @login(is_superuser=True)
+    def test_group_permission_shoud_not_have_cycles(self):
+        group_a = Group.objects.create(name='group A')
+        group_b = Group.objects.create(name='group B')
+
+        resp = self.post('/group/{}/'.format(group_a.pk), {
+            'detail-is-group-name': 'group A',
+            'detail-is-group-fgroups': [group_b.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_redirect(resp)
+
+        resp = self.post('/group/{}/'.format(group_b.pk), {
+            'detail-is-group-name': 'group B',
+            'detail-is-group-fgroups': [group_a.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_ok(resp)
+
+    @login(is_superuser=True)
+    def test_group_permission_shound_not_be_over_limit(self):
+        group_a = Group.objects.create(name='group A')
+        group_b = Group.objects.create(name='group B')
+        group_c = Group.objects.create(name='group C')
+
+        resp = self.post('/group/{}/'.format(group_a.pk), {
+            'detail-is-group-name': 'group A',
+            'detail-is-group-fgroups': [group_b.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_redirect(resp)
+
+        resp = self.post('/group/{}/'.format(group_b.pk), {
+            'detail-is-group-name': 'group B',
+            'detail-is-group-fgroups': [group_c.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_ok(resp)
+
+    @login(is_superuser=True)
+    def test_group_permission_shound_not_be_over_limit(self):
+        group_a = Group.objects.create(name='group A')
+        group_b = Group.objects.create(name='group B')
+        group_c = Group.objects.create(name='group C')
+
+        resp = self.post('/group/{}/'.format(group_a.pk), {
+            'detail-is-group-name': 'group A',
+            'detail-is-group-fgroups': [group_b.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_redirect(resp)
+
+        resp = self.post('/group/{}/'.format(group_b.pk), {
+            'detail-is-group-name': 'group B',
+            'detail-is-group-fgroups': [group_c.pk],
+            'detail-is-group-fperms': []
+        })
+        assert_http_ok(resp)
+
+        with override_settings(PERM_GROUP_MAX_LEVEL=3):
+            resp = self.post('/group/{}/'.format(group_b.pk), {
+                'detail-is-group-name': 'group B',
+                'detail-is-group-fgroups': [group_c.pk],
+                'detail-is-group-fperms': []
+            })
+            assert_http_redirect(resp)

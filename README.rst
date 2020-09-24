@@ -6,10 +6,10 @@ django-fperms-iscore
     :target: https://badge.fury.io/py/django-fperms-iscore
 
 .. image:: https://travis-ci.org/Formulka/django-fperms-iscore.svg?branch=master
-    :target: https://travis-ci.org/Formulka/django-fperms-iscore
+    :target: https://travis-ci.org/druids/django-fperms-iscore
 
 .. image:: https://codecov.io/gh/Formulka/django-fperms-iscore/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/Formulka/django-fperms-iscore
+    :target: https://codecov.io/gh/druids/django-fperms-iscore
 
 Perms for iscore library
 

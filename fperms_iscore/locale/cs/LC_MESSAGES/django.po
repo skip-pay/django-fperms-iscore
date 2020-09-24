@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 20:05+0200\n"
+"POT-Creation-Date: 2020-09-24 14:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,27 @@ msgstr "vytvořit"
 msgid "read"
 msgstr "číst"
 
-#: management/commands/sync_permissions.py:67
+#: forms.py:40
+msgid "permissions"
+msgstr "práva"
+
+#: forms.py:54
+msgid "permission groups"
+msgstr "skupiny práv"
+
+#: forms.py:68
+msgid "subgroups"
+msgstr "podskupiny"
+
+#: forms.py:74
+msgid "Cycles are not allowed"
+msgstr "Cykly nejsou povoleny"
+
+#: forms.py:77
+msgid "Max group level was reached"
+msgstr "Maximální úroveň práv byla přesažena"
+
+#: management/commands/sync_permissions.py:75
 msgid " (obsolete)"
 msgstr " (bez funkce)"
 

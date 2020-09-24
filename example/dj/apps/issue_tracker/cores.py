@@ -1,17 +1,20 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 from issue_tracker.models import Issue
-from issue_tracker.forms import PermissionsForm
+from issue_tracker.forms import UserForm
 
+from fperms.models import Group
+
+from fperms_iscore.forms import GroupForm
 from fperms_iscore.main import PermUIRESTModelISCore
 
 
 class UserISCore(PermUIRESTModelISCore):
 
     model = User
-    form_class = PermissionsForm
+    form_class = UserForm
     ui_list_fields = ('id', 'first_name', 'last_name', 'is_superuser')
-    form_fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'groups', 'perms')
+    form_fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'fperms')
 
 
 class IssueISCore(PermUIRESTModelISCore):
@@ -25,8 +28,8 @@ class UserGroupISCore(PermUIRESTModelISCore):
     model = Group
     can_create = True
 
-    form_class = PermissionsForm
+    form_class = GroupForm
     form_fields = (
-        'id', 'name', 'perms'
+        'id', 'name', 'fperms', 'fgroups'
     )
-    ui_list_fields = ('id', 'name', 'perms')
+    ui_list_fields = ('id', 'name')
