@@ -3,6 +3,11 @@
 History
 -------
 
+0.2.15 (2020-10-24)
++++++++++++++++++++
+
+* New django-fperms library and related changes
+
 0.2.14 (2020-10-22)
 +++++++++++++++++++
 
