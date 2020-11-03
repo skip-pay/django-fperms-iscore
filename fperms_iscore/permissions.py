@@ -17,6 +17,27 @@ permissions = {}
 GENERAL_CACHE_NAME = '__all__'
 
 
+def _get_perm_slug_from_data(perm_type, perm_codename, object_ct=None, object_id=None):
+    slug = '{}|{}'.format(perm_type, perm_codename)
+    if object_ct and object_id:
+        return '{}|{}|{}'.format(slug, object_ct.pk, object_id)
+    return slug
+
+
+def _get_perm_slug_from_obj(perm_type, perm_codename, obj=None):
+    from django.contrib.contenttypes.models import ContentType
+
+    object_ct = object_id = None
+    if obj is not None:
+        object_ct = ContentType.objects.get_for_model(obj)
+        object_id = obj.pk
+    return _get_perm_slug_from_data(perm_type, perm_codename, object_ct, object_id)
+
+
+def _get_perm_slug(perm):
+    return _get_perm_slug_from_data(perm.type, perm.codename, perm.content_type, perm.object_id)
+
+
 class FPermPermission(IsAuthenticated):
 
     def __init__(self, name, verbose_name=None, register=True):
@@ -34,56 +55,27 @@ class FPermPermission(IsAuthenticated):
             raise ImproperlyConfigured('Duplicite permission with name {}'.format(self.name))
         permissions[self.name] = self
 
-    def _get_cache(self, request):
-        request._permissions_cache = getattr(request, '_permissions_cache', {})
-        return request._permissions_cache
-
-    def _add_to_cache(self, request, key, has_perm):
-        self._get_cache(request).setdefault(self.name, {})[key] = has_perm
-
-    def _get_perm(self, obj=None):
-        """
-        Return permission according to permission name and object ID (if permission is related to some object)
-        if permission is not found the None value is returned.
-        :param obj: model instance of the Core
-        :return: `Perm` object or None
-        """
-        perms = Perm.objects.filter(
-            Q(
-                type=enums.PERM_TYPE_CORE,
-                codename=self.name,
-            ),
-            Q(
-                Q(object_id=obj.pk if obj else None) |
-                Q(object_id=None)
-            )
-        )
-        return perms.order_by('-object_id').first()
-
     def has_permission(self, name, request, view, obj=None):
         """
         Return `True` if user has set permission of is superuser
         """
-        cache = self._get_cache(request).get(self.name, {})
         if not super().has_permission(name, request, view, obj):
             return False
-        elif obj is None:
-            has_general_perm = cache.get(GENERAL_CACHE_NAME)
-            if has_general_perm is None:
-                has_general_perm = request.user.fperms.has_perm(self._get_perm())
-                self._add_to_cache(request, GENERAL_CACHE_NAME, has_general_perm)
-            return has_general_perm
-        else:
-            has_general_perm = cache.get(GENERAL_CACHE_NAME)
-            if has_general_perm:
-                return has_general_perm
 
-            has_obj_perm = cache.get(str(obj.pk))
-            if has_obj_perm is None:
-                perm = self._get_perm(obj=obj)
-                has_obj_perm = request.user.fperms.has_perm(perm)
-                self._add_to_cache(request, str(obj.pk), has_obj_perm)
-                if perm and not perm.object_id:
-                    # Object perm is same as general perm
-                    self._add_to_cache(request, GENERAL_CACHE_NAME, has_obj_perm)
-            return has_obj_perm
+        user = request.user
+        if user.is_superuser:
+            return True
+
+        if not hasattr(user, '_fperms_is_core_user_perm_slugs'):
+            user._fperms_is_core_user_perm_slugs = set(
+                _get_perm_slug(p) for p in user.fperms.all_perms()
+            )
+
+        user_perm_slugs = user._fperms_is_core_user_perm_slugs
+        return (
+            _get_perm_slug_from_obj(enums.PERM_TYPE_CORE, self.name) in user_perm_slugs
+            or (
+                obj is not None
+                and _get_perm_slug_from_obj(enums.PERM_TYPE_CORE, self.name, obj=obj) in user_perm_slugs
+            )
+        )
