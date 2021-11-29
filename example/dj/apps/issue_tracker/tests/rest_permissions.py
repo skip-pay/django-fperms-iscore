@@ -1,5 +1,5 @@
 from germanium.decorators import login
-from germanium.test_cases.rest import RESTTestCase
+from germanium.test_cases.rest import RestTestCase
 from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
 
 from fperms.models import Perm
@@ -7,7 +7,7 @@ from fperms.models import Perm
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
 
-class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase):
+class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RestTestCase):
 
     def authorize(self, username, password):
         resp = self.c.post('/login/', {'username': username, 'password': password})
@@ -24,7 +24,6 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase)
         assert_http_bad_request(self.post('/api/user/', {}))
         assert_http_bad_request(self.post('/api/issue/', {}))
 
-        # API
         # Generic read, put, patch, delete
         assert_http_ok(self.get('/api/user/{}/'.format(user.pk)))
         assert_http_ok(self.get('/api/issue/{}/'.format(issue.pk)))
@@ -38,14 +37,12 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RESTTestCase)
         issue = self.create_issue()
         user = self.create_user('new_user', 'password', 'test@email.com')
 
-        # API
         # Generic read, post
         assert_http_forbidden(self.get('/api/user/'))
         assert_http_forbidden(self.get('/api/issue/'))
         assert_http_forbidden(self.post('/api/user/', {}))
         assert_http_forbidden(self.post('/api/issue/', {}))
 
-        # API
         # Generic read, put, patch, delete
         assert_http_forbidden(self.get('/api/user/{}/'.format(user.pk)))
         assert_http_forbidden(self.get('/api/issue/{}/'.format(issue.pk)))

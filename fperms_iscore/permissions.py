@@ -1,5 +1,4 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Q
 
 from fperms import get_perm_model
 
@@ -68,7 +67,8 @@ class BaseFPermPermission(IsAuthenticated):
         return (
             _get_perm_slug_from_obj(enums.PERM_TYPE_CORE, permission_name) in user_perm_slugs
             or (
-                self._check_object_permission and obj is not None
+                self._check_object_permission
+                and obj is not None
                 and _get_perm_slug_from_obj(enums.PERM_TYPE_CORE, permission_name, obj=obj) in user_perm_slugs
             )
         )
