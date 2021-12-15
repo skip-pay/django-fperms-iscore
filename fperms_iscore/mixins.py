@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from .permissions import FPermPermission
 
 
-class PermISCoreMixin:
+class PermCoreMixin:
 
     default_permission_classes = ()
 
@@ -22,8 +22,8 @@ class PermISCoreMixin:
         """
         verbose_name = self.default_permission_verbose_names.get(permission_name)
         return verbose_name.format(
-            model_verbose_name_plural=self.model._meta.verbose_name_plural,
-            model_verbose_name=self.model._meta.verbose_name
+            model_verbose_name_plural=self.get_verbose_name_plural(),
+            model_verbose_name=self.get_verbose_name()
         ) if verbose_name else verbose_name
 
     def _get_default_permission(self, name):

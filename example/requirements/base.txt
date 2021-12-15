@@ -1,6 +1,4 @@
-django-germanium>=2.0.12
-coverage==5.2.1
-django-pyston==2.12.5
-django-is-core==2.21.3
+django-germanium==2.3.0
+coveralls
+flake8
 factory_boy>=3.0.1
--e ../

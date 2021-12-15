@@ -13,7 +13,7 @@ DJANGO_TEST_PORTS = 9000-10000
 DJANGO_SETTINGS_MODULE = $(DJANGO_DIR).settings
 DJANGO_POSTFIX = --settings=$(DJANGO_SETTINGS_MODULE) --pythonpath=$(PYTHONPATH)
 PYTHON_BIN = $(VIRTUAL_ENV)/bin
-PYTHON_VERSION_MAJOR = 3.7
+PYTHON_VERSION_MAJOR = 3
 PYTHON = python$(PYTHON_VERSION_MAJOR)
 TYPE = dev
 OS = $(shell uname)
@@ -37,13 +37,12 @@ cleanvar: clean cleanvirtualenv
 cleanall: cleanvar
 
 pip:
-	$(PYTHON_BIN)/pip install -r requirements/local.txt
 	$(PYTHON_BIN)/pip install -r requirements/base.txt
+	$(PYTHON_BIN)/pip install -r requirements/local.txt
 
 initvirtualenv:
-	virtualenv -p $(PYTHON) --no-site-packages $(VIRTUAL_ENV)
-	$(PYTHON_BIN)/pip install --upgrade pip==1.5
-	$(PYTHON_BIN)/pip install setuptools --no-use-wheel --upgrade
+	virtualenv -p $(PYTHON)  $(VIRTUAL_ENV)
+	$(PYTHON_BIN)/pip install --upgrade pip
 
 bootstrap: initvirtualenv pip
 

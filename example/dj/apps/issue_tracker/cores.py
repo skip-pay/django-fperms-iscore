@@ -6,30 +6,30 @@ from issue_tracker.forms import UserForm
 from fperms.models import Group
 
 from fperms_iscore.forms import GroupForm
-from fperms_iscore.main import PermUIRESTModelISCore
+from fperms_iscore.main import PermDjangoUiRestCore
 
 
-class UserISCore(PermUIRESTModelISCore):
+class UserCore(PermDjangoUiRestCore):
 
     model = User
     form_class = UserForm
-    ui_list_fields = ('id', 'first_name', 'last_name', 'is_superuser')
+    fields = ('username', 'first_name', 'last_name', 'is_superuser')
+    list_fields = ('id', 'first_name', 'last_name', 'is_superuser')
     form_fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'fperms')
 
 
-class IssueISCore(PermUIRESTModelISCore):
+class IssueCore(PermDjangoUiRestCore):
 
     model = Issue
-    ui_list_fields = ('id', '_obj_name', 'watched_by_string', 'leader__email', 'leader__last_name')
+    fields = ('name', 'watched_by', 'created_by', 'solver', 'leader')
+    list_fields = ('id', '_obj_name', 'watched_by_string', 'leader__email', 'leader__last_name')
 
 
-class UserGroupISCore(PermUIRESTModelISCore):
+class UserGroupCore(PermDjangoUiRestCore):
 
     model = Group
     can_create = True
 
     form_class = GroupForm
-    form_fields = (
-        'id', 'name', 'fperms', 'fgroups'
-    )
-    ui_list_fields = ('id', 'name')
+    fields = ('codename', 'name', 'fperms', 'fgroups', 'users')
+    list_fields = ('id', 'name')
