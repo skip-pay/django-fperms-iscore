@@ -62,3 +62,13 @@ Commands
 --------
 
 We right now have implemented cores with a dynamic permission check. But database permissions should be somehow stored inside a database. The command `sync_permissions` is there for this purpose. The command will create new permissions and update already generated permissions.
+
+
+Setting
+-------
+
+You can turn on permission caching with this settings::
+
+   IS_CORE_PERM_USE_CACHE = False
+   IS_CORE_PERM_CACHE_NAME = 'default'  # name where the permissions are cached
+   IS_CORE_PERM_CACHE_TIMEOUT':  60 * 10  # timeout to cache permissions (10min)
