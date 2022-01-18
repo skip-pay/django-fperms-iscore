@@ -2,7 +2,9 @@ from django.test import override_settings
 
 from germanium.decorators import login
 from germanium.test_cases.client import ClientTestCase
-from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
+from germanium.tools.http import (
+    assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
+)
 
 from fperms.models import Perm, Group
 

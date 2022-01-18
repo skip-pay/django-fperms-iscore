@@ -1,8 +1,10 @@
+from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
 
 from fperms import get_perm_model
 
 from fperms_iscore import enums
+from fperms_iscore.conf import settings
 
 from is_core.auth.permissions import IsAuthenticated
 
@@ -16,25 +18,52 @@ permissions = {}
 GENERAL_CACHE_NAME = '__all__'
 
 
-def _get_perm_slug_from_data(perm_type, perm_codename, object_ct=None, object_id=None):
+def _get_perm_slug_from_data(perm_type, perm_codename, object_ct_id=None, object_id=None):
     slug = '{}|{}'.format(perm_type, perm_codename)
-    if object_ct and object_id:
-        return '{}|{}|{}'.format(slug, object_ct.pk, object_id)
+    if object_ct_id and object_id:
+        return '{}|{}|{}'.format(slug, object_ct_id, object_id)
     return slug
 
 
 def _get_perm_slug_from_obj(perm_type, perm_codename, obj=None):
     from django.contrib.contenttypes.models import ContentType
 
-    object_ct = object_id = None
+    object_ct_id = object_id = None
     if obj is not None:
-        object_ct = ContentType.objects.get_for_model(obj)
+        object_ct_id = ContentType.objects.get_for_model(obj).pk
         object_id = obj.pk
-    return _get_perm_slug_from_data(perm_type, perm_codename, object_ct, object_id)
+    return _get_perm_slug_from_data(perm_type, perm_codename, object_ct_id, object_id)
 
 
 def _get_perm_slug(perm):
-    return _get_perm_slug_from_data(perm.type, perm.codename, perm.content_type, perm.object_id)
+    return _get_perm_slug_from_data(perm.type, perm.codename, perm.content_type_id, perm.object_id)
+
+
+def get_cache():
+    return caches[settings.IS_CORE_PERM_CACHE_NAME] if settings.IS_CORE_PERM_USE_CACHE else None
+
+
+def get_all_user_perm_slugs(request):
+    if hasattr(request.user, '_fperms_is_core_user_perm_slugs'):
+        return request.user._fperms_is_core_user_perm_slugs
+
+    cache_key = None
+    perm_slugs = None
+    cache = get_cache()
+
+    if cache:
+        assert hasattr(request, 'session'), 'The cached permissions requres session middleware to be installed, ' \
+                                            'and come before the message middleware in the MIDDLEWARE list'
+        cache_key = f'fperms_is_core-{request.user.pk}-{request.session.session_key}'
+        perm_slugs = cache.get(cache_key)
+
+    if perm_slugs is None:
+        perm_slugs = set(_get_perm_slug(p) for p in request.user.fperms.all_perms())
+        if cache:
+            cache.set(cache_key, perm_slugs, settings.IS_CORE_PERM_CACHE_TIMEOUT)
+
+    request.user._fperms_is_core_user_perm_slugs = perm_slugs
+    return perm_slugs
 
 
 class BaseFPermPermission(IsAuthenticated):
@@ -56,14 +85,9 @@ class BaseFPermPermission(IsAuthenticated):
         if user.is_superuser:
             return True
 
-        if not hasattr(user, '_fperms_is_core_user_perm_slugs'):
-            user._fperms_is_core_user_perm_slugs = set(
-                _get_perm_slug(p) for p in user.fperms.all_perms()
-            )
-
         permission_name = self._get_name(name, request, view, obj)
 
-        user_perm_slugs = user._fperms_is_core_user_perm_slugs
+        user_perm_slugs = get_all_user_perm_slugs(request)
         return (
             _get_perm_slug_from_obj(enums.PERM_TYPE_CORE, permission_name) in user_perm_slugs
             or (

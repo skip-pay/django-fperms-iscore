@@ -1,6 +1,11 @@
+from django.test import override_settings
+from django.core.cache import cache
+
 from germanium.decorators import login
 from germanium.test_cases.rest import RestTestCase
-from germanium.tools.http import assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
+from germanium.tools.http import (
+    assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
+)
 
 from fperms.models import Perm
 
@@ -83,3 +88,21 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RestTestCase)
         assert_http_forbidden(self.put('/api/issue/{}/'.format(issue.pk), {}))
         assert_http_accepted(self.delete('/api/user/{}/'.format(user.pk)))
         assert_http_forbidden(self.delete('/api/issue/{}/'.format(issue.pk)))
+
+    @login(is_superuser=False)
+    @override_settings(IS_CORE_PERM_USE_CACHE=True)
+    def test_user_permissions_should_be_cached(self):
+        self.sync_permissions()
+        self.create_issue()
+        self.create_user('new_user', 'password', 'test@email.com')
+        logged_user = self.logged_user.user
+        assert_http_forbidden(self.get('/api/issue/'))
+        issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
+
+        # Add permission but permissions are still cached
+        logged_user.fperms.add(issue_read_permission)
+        assert_http_forbidden(self.get('/api/issue/'))
+
+        # clear cache reset permissions
+        cache.clear()
+        assert_http_ok(self.get('/api/issue/'))
