@@ -39,8 +39,10 @@ def _get_perm_slug(perm):
     return _get_perm_slug_from_data(perm.type, perm.codename, perm.content_type_id, perm.object_id)
 
 
-def get_cache():
-    return caches[settings.IS_CORE_PERM_CACHE_NAME] if settings.IS_CORE_PERM_USE_CACHE else None
+def get_cache(request):
+    if not hasattr(request, 'session') or not settings.IS_CORE_PERM_USE_CACHE:
+        return None
+    return caches[settings.IS_CORE_PERM_CACHE_NAME]
 
 
 def get_all_user_perm_slugs(request):
@@ -49,11 +51,9 @@ def get_all_user_perm_slugs(request):
 
     cache_key = None
     perm_slugs = None
-    cache = get_cache()
+    cache = get_cache(request)
 
     if cache:
-        assert hasattr(request, 'session'), 'The cached permissions requres session middleware to be installed, ' \
-                                            'and come before the message middleware in the MIDDLEWARE list'
         cache_key = f'fperms_is_core-{request.user.pk}-{request.session.session_key}'
         perm_slugs = cache.get(cache_key)
 
