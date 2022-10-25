@@ -70,7 +70,8 @@ class Command(BaseCommand):
             self.stdout.write(' Removed: {}'.format(count))
         elif nonexistent_used_permissions_qs.exists():
             self.stderr.write(
-                'Found used obsolete permissions, run command with "--clean-obsolete" parameter for cleaning'
+                f'Found used obsolete permissions ({nonexistent_used_permissions_qs.count()}), '
+                f'run command with "--clean-obsolete" parameter for cleaning'
             )
             obsolete_string = ugettext(' (obsolete)')
             nonexistent_used_permissions_qs.exclude(
