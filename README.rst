@@ -24,7 +24,7 @@ Quickstart
 
 Install django-fperms-iscore::
 
-    pip install django-fperms-iscore
+    pip install skip-django-fperms-iscore
 
 Add it to your `INSTALLED_APPS`:
 

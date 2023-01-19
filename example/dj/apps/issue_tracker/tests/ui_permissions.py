@@ -6,7 +6,9 @@ from germanium.tools.http import (
     assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
 )
 
-from fperms.models import Perm, Group
+from fperms.base import Group
+from fperms.models import Perm
+
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 

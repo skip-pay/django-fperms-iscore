@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from issue_tracker.models import Issue
 from issue_tracker.forms import UserForm
 
-from fperms.models import Group
+from fperms.base import Group
 
 from fperms_iscore.forms import GroupForm
 from fperms_iscore.main import PermDjangoUiRestCore
