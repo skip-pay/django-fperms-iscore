@@ -2,9 +2,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
-from fperms.base import Group
 from fperms.conf import settings as fperms_settings
-from fperms.models import Perm
+from fperms.models import Group, Perm
 
 from is_core.forms.models import SmartModelForm, ModelMultipleChoiceField
 
