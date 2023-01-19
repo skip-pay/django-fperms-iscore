@@ -12,7 +12,27 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        include:
+          - python-version: "3.7"
+            django-version: Django==3.1
+
+          - python-version: "3.8"
+            django-version: Django==3.1
+
+          - python-version: "3.7"
+            django-version: Django==3.2
+
+          - python-version: "3.8"
+            django-version: Django==3.2
+
+          - python-version: "3.9"
+            django-version: Django==3.2
+
+          - python-version: "3.10"
+            django-version: Django==3.2
+
+          - python-version: "3.11"
+            django-version: Django==3.2
 
     steps:
     - uses: actions/checkout@v2
@@ -23,16 +43,15 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install Django==3.1
-        pip install -r example/requirements/base.txt
-        pip install -e .
+        cd example
+        pip install ${{ matrix.django-version }}
+        pip install -r requirements/base.txt
     - name: Flake
       run: |
-        flake8 --ignore E1,E23,W503 fperms_iscore
+        flake8 --config .config/flake8 fperms_iscore
     - name: Run Tests
       run: |
-        cd example
-        coverage run --omit */site-packages/*,*/migrations/*,*/lib/* manage.py test issue_tracker.tests --settings=dj.settings -v 2
+        coverage run --omit */site-packages/*,*/migrations/*,*/lib/* example/manage.py test issue_tracker.tests --settings=dj.settings -v 2
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
       with:

@@ -1,4 +1,5 @@
-django-germanium==2.3.0
+skip-django-germanium==2.3.6.1
 coveralls
 flake8
 factory_boy>=3.0.1
+-e ../

@@ -45,21 +45,21 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='django-fperms-iscore',
+    name='skip-django-fperms-iscore',
     version=version,
     description="""Perms for iscore library """,
     long_description=readme + '\n\n' + history,
     author='Petr Olah',
     author_email='djangoguru@gmail.com',
-    url='https://github.com/Formulka/django-fperms-iscore',
-    download_url='https://github.com/formulka/django-fperms-iscore/archive/{}.tar.gz'.format(version),
+    url='https://github.com/skip-pay/django-fperms-iscore',
+    download_url='https://github.com/skip-pay/django-fperms-iscore/archive/{}.tar.gz'.format(version),
     packages=[
         'fperms_iscore',
     ],
     include_package_data=True,
     install_requires=[
-        "django-fperms>=0.4.8",
-        "django-is-core>=2.23.0",
+        "skip-django-fperms>=0.4.8.2",
+        "skip-django-is-core>=2.24.6.2",
     ],
     license="MIT",
     zip_safe=False,
