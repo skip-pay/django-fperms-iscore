@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 from fperms.conf import settings as fperms_settings
 from fperms.models import Group, Perm
@@ -71,9 +71,9 @@ class GroupForm(SmartModelForm):
         fgroups = self.cleaned_data['fgroups']
 
         if self.instance.pk in get_all_group_pks(fgroups):
-            raise ValidationError(ugettext('Cycles are not allowed'))
+            raise ValidationError(gettext('Cycles are not allowed'))
 
         if get_group_level(self.instance, fgroups) > fperms_settings.PERM_GROUP_MAX_LEVEL:
-            raise ValidationError(ugettext('Max group level was reached'))
+            raise ValidationError(gettext('Max group level was reached'))
 
         return fgroups

@@ -58,8 +58,9 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "skip-django-fperms>=0.4.8.3",
-        "skip-django-is-core>=2.24.6.2",
+        "django>=4.2",
+        "skip-django-fperms @ git+https://github.com/skip-pay/django-fperms@tda/chore/django_bump",
+        "skip-django-is-core @ git+https://github.com/skip-pay/django-is-core@tda/chore/django_bump",
     ],
     license="MIT",
     zip_safe=False,
