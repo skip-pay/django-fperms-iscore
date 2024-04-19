@@ -1,5 +1,5 @@
-skip-django-germanium @ git+https://github.com/skip-pay/germanium@tda/chore/django_bump
-skip-django-block-snippets @ git+https://github.com/skip-pay/django-block-snippets@tda/chore/django_bump
+skip-django-germanium==2.4.0
+skip-django-block-snippets==2.1.0
 coveralls
 flake8
 factory_boy>=3.0.1
