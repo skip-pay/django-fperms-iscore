@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import F, Value
 from django.db.models.functions import Concat
-from django.utils.translation import ugettext
+from django.utils.translation import gettext
 
 from chamber.shortcuts import get_object_or_none
 from chamber.utils.decorators import translation_activate_block
@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 f'Found used obsolete permissions ({nonexistent_used_permissions_qs.count()}), '
                 f'run command with "--clean-obsolete" parameter for cleaning'
             )
-            obsolete_string = ugettext(' (obsolete)')
+            obsolete_string = gettext(' (obsolete)')
             nonexistent_used_permissions_qs.exclude(
                 name__endswith=obsolete_string
             ).update(

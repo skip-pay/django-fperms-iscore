@@ -58,8 +58,9 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "skip-django-fperms>=0.4.8.3",
-        "skip-django-is-core>=2.24.6.2",
+        "django>=4.2",
+        "skip-django-fperms>=0.5.0",
+        "skip-django-is-core>=2.25.0",
     ],
     license="MIT",
     zip_safe=False,
