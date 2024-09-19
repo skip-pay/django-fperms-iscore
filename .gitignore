@@ -32,6 +32,7 @@ htmlcov
 .mr.developer.cfg
 .project
 .pydevproject
+.python-version
 
 # Pycharm/Intellij
 .idea

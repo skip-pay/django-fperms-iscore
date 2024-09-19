@@ -77,3 +77,19 @@ class GroupForm(SmartModelForm):
             raise ValidationError(gettext('Max group level was reached'))
 
         return fgroups
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_internal_group = cleaned_data["is_internal_group"]
+        fgroups = cleaned_data.get("fgroups")
+
+        if not is_internal_group and fgroups and fgroups.filter(is_internal_group=True).exists():
+            group_names = [*fgroups.filter(is_internal_group=True).values_list("name", flat=True)]
+            raise ValidationError(
+                {
+                    "fgroups": gettext(
+                        f"A non-internal group cannot contain subgroups of internal permission groups {group_names}."
+                    )
+                }
+            )
+        return cleaned_data
