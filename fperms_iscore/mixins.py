@@ -4,6 +4,12 @@ from .permissions import FPermPermission
 
 
 class PermCoreMixin:
+    """
+    Mixin that adds automatic CRUD permission generation to Core classes.
+
+    Generates permissions with pattern: {menu_group}__{operation}
+    Operations: create, read, update, delete
+    """
 
     default_permission_classes = ()
 
