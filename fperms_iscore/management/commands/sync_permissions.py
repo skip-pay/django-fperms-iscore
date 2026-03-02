@@ -51,17 +51,18 @@ class Command(BaseCommand):
         self.stdout.write(' Created: {}'.format(len(created_permission_pks)))
 
         self.stdout.write('Removing unused permissions')
-        nonexistent_unused_permissions_qs = Perm.objects.exclude(
-            pk__in=updated_permission_pks | created_permission_pks | unchanged_permissions_pks
-        ).filter(
-            fgroups__isnull=True, users__isnull=True
+        nonexistent_unused_permissions_qs = (
+            Perm.objects.filter(type=enums.PERM_TYPE_CORE)
+            .exclude(pk__in=updated_permission_pks | created_permission_pks | unchanged_permissions_pks)
+            .filter(fgroups__isnull=True, users__isnull=True)
         )
         count = nonexistent_unused_permissions_qs.count()
         nonexistent_unused_permissions_qs.delete()
         self.stdout.write(' Removed: {}'.format(count))
 
-        nonexistent_used_permissions_qs = Perm.objects.exclude(
-            pk__in=updated_permission_pks | created_permission_pks | unchanged_permissions_pks
+        nonexistent_used_permissions_qs = (
+            Perm.objects.filter(type=enums.PERM_TYPE_CORE)
+            .exclude(pk__in=updated_permission_pks | created_permission_pks | unchanged_permissions_pks)
         )
         if options.get('clean_obsolete'):
             self.stdout.write('Removing used permissions')
