@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
 
@@ -16,6 +18,8 @@ permissions = {}
 
 
 GENERAL_CACHE_NAME = '__all__'
+
+CACHE_VERSION_KEY = 'fperms_is_core-version'
 
 
 def _get_perm_slug_from_data(perm_type, perm_codename, object_ct_id=None, object_id=None):
@@ -45,6 +49,23 @@ def get_cache(request):
     return caches[settings.IS_CORE_PERM_CACHE_NAME]
 
 
+def _get_cache_version(cache):
+    version = cache.get(CACHE_VERSION_KEY)
+    if version is None:
+        # A random version cannot match entries cached before the version key was lost.
+        cache.add(CACHE_VERSION_KEY, uuid4().hex, None)
+        version = cache.get(CACHE_VERSION_KEY)
+    return version
+
+
+def invalidate_perm_cache():
+    """
+    Invalidate cached permissions of all users by changing the version that is part of the cache key.
+    """
+    if settings.IS_CORE_PERM_USE_CACHE:
+        caches[settings.IS_CORE_PERM_CACHE_NAME].set(CACHE_VERSION_KEY, uuid4().hex, None)
+
+
 def get_all_user_perm_slugs(request):
     if hasattr(request.user, '_fperms_is_core_user_perm_slugs'):
         return request.user._fperms_is_core_user_perm_slugs
@@ -54,7 +75,9 @@ def get_all_user_perm_slugs(request):
     cache = get_cache(request)
 
     if cache:
-        cache_key = f'fperms_is_core-{request.user.pk}-{request.session.session_key}'
+        cache_key = (
+            f'fperms_is_core-{_get_cache_version(cache)}-{request.user.pk}-{request.session.session_key}'
+        )
         perm_slugs = cache.get(cache_key)
 
     if perm_slugs is None:

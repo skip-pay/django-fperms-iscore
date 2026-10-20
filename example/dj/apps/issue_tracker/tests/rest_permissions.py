@@ -7,7 +7,7 @@ from germanium.tools.http import (
     assert_http_redirect, assert_http_ok, assert_http_forbidden, assert_http_bad_request, assert_http_accepted
 )
 
-from fperms.models import Perm
+from fperms.models import Group, Perm
 
 from .test_case import HelperTestCase, AsSuperuserTestCase
 
@@ -93,16 +93,70 @@ class RESTPermissionsTestCase(AsSuperuserTestCase, HelperTestCase, RestTestCase)
     @override_settings(IS_CORE_PERM_USE_CACHE=True)
     def test_user_permissions_should_be_cached(self):
         self.sync_permissions()
-        self.create_issue()
-        self.create_user('new_user', 'password', 'test@email.com')
         logged_user = self.logged_user.user
         assert_http_forbidden(self.get('/api/issue/'))
         issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
 
-        # Add permission but permissions are still cached
-        logged_user.fperms.add(issue_read_permission)
+        # Add permission without signals, permissions are still cached
+        Perm.users.through.objects.create(perm=issue_read_permission, user=logged_user)
         assert_http_forbidden(self.get('/api/issue/'))
 
         # clear cache reset permissions
         cache.clear()
         assert_http_ok(self.get('/api/issue/'))
+
+    @login(is_superuser=False)
+    @override_settings(IS_CORE_PERM_USE_CACHE=True)
+    def test_user_permission_change_should_invalidate_cached_permissions(self):
+        self.sync_permissions()
+        logged_user = self.logged_user.user
+        assert_http_forbidden(self.get('/api/issue/'))
+        issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            logged_user.fperms.add(issue_read_permission)
+        assert_http_ok(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            logged_user.fperms.remove(issue_read_permission)
+        assert_http_forbidden(self.get('/api/issue/'))
+
+    @login(is_superuser=False)
+    @override_settings(IS_CORE_PERM_USE_CACHE=True)
+    def test_group_change_should_invalidate_cached_permissions(self):
+        self.sync_permissions()
+        logged_user = self.logged_user.user
+        issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
+        parent_group = Group.objects.create(name='parent')
+        child_group = Group.objects.create(name='child')
+        assert_http_forbidden(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            parent_group.users.add(logged_user)
+        assert_http_forbidden(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            parent_group.fgroups.add(child_group)
+        assert_http_forbidden(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            child_group.fperms.add(issue_read_permission)
+        assert_http_ok(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            child_group.delete()
+        assert_http_forbidden(self.get('/api/issue/'))
+
+    @login(is_superuser=False)
+    @override_settings(IS_CORE_PERM_USE_CACHE=True)
+    def test_permission_delete_should_invalidate_cached_permissions(self):
+        self.sync_permissions()
+        logged_user = self.logged_user.user
+        issue_read_permission = Perm.objects.get(codename='{}__{}'.format('issue', 'read'))
+        with self.captureOnCommitCallbacks(execute=True):
+            logged_user.fperms.add(issue_read_permission)
+        assert_http_ok(self.get('/api/issue/'))
+
+        with self.captureOnCommitCallbacks(execute=True):
+            issue_read_permission.delete()
+        assert_http_forbidden(self.get('/api/issue/'))

@@ -72,3 +72,5 @@ You can turn on permission caching with this settings::
    IS_CORE_PERM_USE_CACHE = False
    IS_CORE_PERM_CACHE_NAME = 'default'  # name where the permissions are cached
    IS_CORE_PERM_CACHE_TIMEOUT':  60 * 10  # timeout to cache permissions (10min)
+
+Cached permissions of all users are invalidated whenever user permissions, group permissions, group members or subgroups change, or a permission or a group is deleted.
